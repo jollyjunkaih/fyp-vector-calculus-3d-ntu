@@ -1,7 +1,7 @@
 import { useThree, extend, useFrame } from "@react-three/fiber";
 import { useRef, useLayoutEffect, useEffect, useState } from "react";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { Html, Line } from "@react-three/drei";
+import { Html, Line, Text } from "@react-three/drei";
 import Arrow from "./Arrow";
 import Formula from "fparser";
 extend({ OrbitControls });
@@ -49,18 +49,48 @@ export default function Experience() {
 
       <directionalLight position={[1, 2, 3]} intensity={1.5} />
       <ambientLight intensity={0.5} />
-      <Html position={[15, 0, 0]}>
-        <text>Type the formula for i</text>
-        <input
-          value={formula.i}
-          onChange={(val) => setFormula({ ...formula, i: val.target.value })}
-        ></input>
-        <text>Type the formula for j</text>
-        <input
-          value={formula.j}
-          onChange={(val) => setFormula({ ...formula, j: val.target.value })}
-        ></input>
-        <button onClick={onUpdate}>Update</button>
+      <Html position={[12, 5, 0]}>
+        <div
+          style={{
+            minWidth: 250,
+            padding: 20,
+            boxShadow: "2px 2px #525252",
+            borderRadius: 5,
+            backgroundColor: "white",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <text>Type the formula for i</text>
+          <input
+            value={formula.i}
+            onChange={(val) => setFormula({ ...formula, i: val.target.value })}
+          />
+          <br />
+          <text>Type the formula for j</text>
+          <input
+            value={formula.j}
+            onChange={(val) => setFormula({ ...formula, j: val.target.value })}
+          />
+
+          <br />
+          <text>
+            f(x,y)= ({formula.i}) i + ({formula.j}) j
+          </text>
+          <br />
+          <button
+            style={{
+              padding: 8,
+              boxShadow: "2px 2px #525252",
+              borderRadius: 5,
+              backgroundColor: "white",
+            }}
+            onClick={onUpdate}
+          >
+            <text>Update</text>
+          </button>
+        </div>
       </Html>
       <group>
         <mesh position={[gridSize / 2, 0, 0]} rotation-z={Math.PI * 1.5}>
@@ -101,7 +131,7 @@ export default function Experience() {
             position={[x, y, 0]}
             key={x.toString() + y.toString() + i.toString() + j.toString()}
           >
-            <Arrow i={i} j={j} color="black" />
+            <Arrow i={i} j={j} x={x} y={y} color="black" />
           </mesh>
         );
       })}
