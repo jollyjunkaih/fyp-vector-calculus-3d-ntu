@@ -1,6 +1,8 @@
 import { Html, Line, Text } from "@react-three/drei";
 import React, { useState } from "react";
-export default function Arrow({ i, j, k, x, y, color }) {
+import nerdamer from "nerdamer/all.min";
+
+export default function Arrow({ i, j, k, x, y, color, formula }) {
   const [hover, setHover] = useState(false);
   let degreeDeviation = Math.atan(j / i);
   //add pi rotation to mirror about y-axis if i vector is negative
@@ -8,6 +10,17 @@ export default function Arrow({ i, j, k, x, y, color }) {
     degreeDeviation = degreeDeviation + Math.PI;
   }
 
+  const getGradient = () => {
+    const gradientX = nerdamer.diff(formula.i, "x", 1);
+    const X = nerdamer(gradientX.toString(), { x: x, y: y }).toString();
+    const gradientY = nerdamer.diff(formula.j, "y", 1);
+    const Y = nerdamer(gradientY.toString(), { y: y, x: x }).toString();
+    return (
+      <>
+        {X} <Vector text="i" /> + {Y} <Vector text="j" />
+      </>
+    );
+  };
   return (
     <group
       rotation={[0, 0, degreeDeviation]}
@@ -34,7 +47,7 @@ export default function Arrow({ i, j, k, x, y, color }) {
               {j > 0 ? "+" : null} {j} <Vector text="j" />
               <br />
               Gradient: <span>&#8711;</span>
-              <Vector text="u" />
+              <Vector text="u" /> = {getGradient()}
             </p>
           </div>
         </Html>

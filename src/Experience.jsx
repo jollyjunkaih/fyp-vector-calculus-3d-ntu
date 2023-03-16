@@ -131,7 +131,7 @@ export default function Experience() {
             position={[x, y, 0]}
             key={x.toString() + y.toString() + i.toString() + j.toString()}
           >
-            <Arrow i={i} j={j} x={x} y={y} color="black" />
+            <Arrow i={i} j={j} x={x} y={y} formula={formula} color="black" />
           </mesh>
         );
       })}
