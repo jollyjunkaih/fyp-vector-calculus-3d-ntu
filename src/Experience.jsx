@@ -3,7 +3,8 @@ import { useRef, useLayoutEffect, useEffect, useState } from "react";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Html, Line, Text } from "@react-three/drei";
 import Arrow from "./Arrow";
-import Formula from "fparser";
+import nerdamer from "nerdamer/all.min";
+import katex from "katex";
 extend({ OrbitControls });
 
 export default function Experience() {
@@ -15,19 +16,16 @@ export default function Experience() {
 
   const useFormulaI = (x, y) => {
     if (formula.i) {
-      const formulaObj = new Formula(formula.i);
-      return formulaObj.evaluate({ x: x, y: y });
+      return nerdamer(formula.i, { x: x, y: y }).toString();
     }
   };
   const useFormulaJ = (x, y) => {
     if (formula.j) {
-      const formulaObj = new Formula(formula.j);
-      return formulaObj.evaluate({ x: x, y: y });
+      return nerdamer(formula.i, { x: x, y: y }).toString();
     }
   };
   const onUpdate = () => {
     if (formula.i && formula.j) {
-      console.log("running here");
       let newValueList = [];
       for (let x = -gridSize / 2; x < gridSize / 2; x++) {
         for (let y = -gridSize / 2; y < gridSize / 2; y++) {
@@ -40,9 +38,53 @@ export default function Experience() {
         }
       }
       setValues(newValueList);
+      console.log(nerdamer.convertToLaTeX(formula.i));
+      console.log(nerdamer.convertToLaTeX(formula.j));
     }
   };
-
+  const displayFormula = () => {
+    try {
+      if (
+        nerdamer.convertToLaTeX(formula.i) &&
+        nerdamer.convertToLaTeX(formula.j)
+      ) {
+        return (
+          <div
+            dangerouslySetInnerHTML={{
+              __html: katex.renderToString(
+                `f(x,y) = ${nerdamer.convertToLaTeX(
+                  formula.i
+                )} i + ${nerdamer.convertToLaTeX(formula.j)} j`
+              ),
+            }}
+          />
+        );
+      }
+    } catch (e) {
+      {
+        try {
+          return (
+            <>
+              <text>{`f(x,y) = ${nerdamer.convertToLaTeX(
+                formula.i
+              )} i + ${nerdamer.convertToLaTeX(formula.j)} j`}</text>
+              <text>
+                There is an error while parsing your formula. Please try again
+              </text>
+            </>
+          );
+        } catch (e) {
+          return (
+            <>
+              <text>
+                There is an error while parsing your formula. Please try again
+              </text>
+            </>
+          );
+        }
+      }
+    }
+  };
   return (
     <>
       <orbitControls args={[camera, gl.domElement]} />
@@ -75,9 +117,8 @@ export default function Experience() {
           />
 
           <br />
-          <text>
-            f(x,y)= ({formula.i}) i + ({formula.j}) j
-          </text>
+          {displayFormula()}
+
           <br />
           <button
             style={{
@@ -103,7 +144,7 @@ export default function Experience() {
             [-gridSize / 2, 0, 0],
             [gridSize / 2, 0, 0],
           ]}
-          color="red"
+          color='red'
           lineWidth={5}
         />
         <mesh position={[0, gridSize / 2, 0]}>
@@ -117,12 +158,12 @@ export default function Experience() {
             [0, -gridSize / 2, 0],
             [0, gridSize / 2, 0],
           ]}
-          color="red"
+          color='red'
           lineWidth={5}
         />
         <mesh>
           <planeGeometry args={[gridSize, gridSize]} />
-          <meshStandardMaterial color="greenyellow" />
+          <meshStandardMaterial color='greenyellow' />
         </mesh>
       </group>
       {[...values].map(({ i, j, x, y }) => {
@@ -131,7 +172,7 @@ export default function Experience() {
             position={[x, y, 0]}
             key={x.toString() + y.toString() + i.toString() + j.toString()}
           >
-            <Arrow i={i} j={j} x={x} y={y} formula={formula} color="black" />
+            <Arrow i={i} j={j} x={x} y={y} formula={formula} color='black' />
           </mesh>
         );
       })}
