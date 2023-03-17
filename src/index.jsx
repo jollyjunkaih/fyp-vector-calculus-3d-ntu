@@ -1,8 +1,9 @@
 import "./style.css";
 import ReactDOM from "react-dom/client";
 import { Canvas } from "@react-three/fiber";
-import Experience from "./Experience.jsx";
 import * as THREE from "three";
+import TwoDVectorField from "./TwoDVectorField";
+import ThreeDVectorField from "./ThreeDVectorField";
 
 const root = ReactDOM.createRoot(document.querySelector("#root"));
 
@@ -20,6 +21,6 @@ root.render(
       position: [3, 2, 6],
     }}
   >
-    <Experience />
+    <ThreeDVectorField />
   </Canvas>
 );

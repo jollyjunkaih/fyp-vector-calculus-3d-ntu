@@ -2,12 +2,12 @@ import { useThree, extend, useFrame } from "@react-three/fiber";
 import { useRef, useLayoutEffect, useEffect, useState } from "react";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Html, Line, Text } from "@react-three/drei";
-import Arrow from "./Arrow";
+import Arrow from "./Arrow-3D";
 import nerdamer from "nerdamer/all.min";
 import katex from "katex";
 extend({ OrbitControls });
 
-export default function Experience() {
+export default function ThreeDVectorField() {
   const { camera, gl } = useThree();
 
   const [formula, setFormula] = useState({ i: "", j: "", k: "" });
@@ -21,7 +21,7 @@ export default function Experience() {
   };
   const useFormulaJ = (x, y) => {
     if (formula.j) {
-      return nerdamer(formula.i, { x: x, y: y }).toString();
+      return nerdamer(formula.j, { x: x, y: y }).toString();
     }
   };
   const onUpdate = () => {
