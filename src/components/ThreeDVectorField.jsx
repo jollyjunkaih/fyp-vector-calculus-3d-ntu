@@ -9,7 +9,7 @@ extend({ OrbitControls });
 
 export default function ThreeDVectorField() {
   const { camera, gl } = useThree();
-
+  const axesColor = "red";
   const [formula, setFormula] = useState({ i: "", j: "", k: "" });
   const [values, setValues] = useState([]);
   const gridSize = 10;
@@ -155,8 +155,10 @@ export default function ThreeDVectorField() {
       <group>
         <mesh position={[gridSize / 2, 0, 0]} rotation-z={Math.PI * 1.5}>
           <coneGeometry args={[0.1, 0.5]} />
-          <meshStandardMaterial color={"red"} />
-          <Html position={[0, 0.5, 0]}>X</Html>
+          <meshStandardMaterial color={axesColor} />
+          <Html style={{ color: axesColor }} position={[0, 0.5, 0]}>
+            X
+          </Html>
         </mesh>
         <Line
           points={[
@@ -168,8 +170,10 @@ export default function ThreeDVectorField() {
         />
         <mesh position={[0, gridSize / 2, 0]}>
           <coneGeometry args={[0.1, 0.5]} />
-          <meshStandardMaterial color={"red"} />
-          <Html position={[0, 0.5, 0]}>Y</Html>
+          <meshStandardMaterial color={axesColor} />
+          <Html style={{ color: axesColor }} position={[0, 0.5, 0]}>
+            Y
+          </Html>
         </mesh>
 
         <Line
@@ -182,8 +186,10 @@ export default function ThreeDVectorField() {
         />
         <mesh position={[0, 0, gridSize / 2]} rotation-x={Math.PI * 0.5}>
           <coneGeometry args={[0.1, 0.5]} />
-          <meshStandardMaterial color={"red"} />
-          <Html position={[0, 0, 0.5]}>Z</Html>
+          <meshStandardMaterial color={axesColor} />
+          <Html style={{ color: axesColor }} position={[0, 0, 0.5]}>
+            Z
+          </Html>
         </mesh>
 
         <Line
