@@ -23,10 +23,13 @@ export default function Arrow({ i, j, k, x, y, z, color, formula }) {
     const Y = nerdamer(gradientY.toString(), { x: x, y: y, z: z }).toString();
     const gradientZ = nerdamer.diff(formula.k, "z", 1);
     const Z = nerdamer(gradientZ.toString(), { x: x, y: y, z: z }).toString();
-    console.log();
     return (
       <>
-        {X} <Vector text='i' /> + {Y} <Vector text='j' />+ {Z}
+        {X} <Vector text='i' />
+        {Y >= 0 ? " + " : " "} {Y}
+        <Vector text='j' />
+        {Z >= 0 ? " + " : " "}
+        {Z}
         <Vector text='k' />
       </>
     );
@@ -76,8 +79,10 @@ export default function Arrow({ i, j, k, x, y, z, color, formula }) {
     console.log(Zy, Yz, Xz, Zx, Yx, Xy);
     return (
       <>
-        {parseFloat(Zy) - parseFloat(Yz)} <Vector text='i' />{" "}
-        {parseFloat(Xz) - parseFloat(Zx)} <Vector text='j' />{" "}
+        {parseFloat(Zy) - parseFloat(Yz)} <Vector text='i' />
+        {parseFloat(Xz) - parseFloat(Zx) >= 0 ? " + " : " "}
+        {parseFloat(Xz) - parseFloat(Zx)} <Vector text='j' />
+        {parseFloat(Yx) - parseFloat(Xy) >= 0 ? " + " : " "}
         {parseFloat(Yx) - parseFloat(Xy)} <Vector text='k' />
       </>
     );
@@ -105,8 +110,8 @@ export default function Arrow({ i, j, k, x, y, z, color, formula }) {
               Coordinate: [{x}, {y}, {z}]
               <br />
               Vector: <Vector text='u' /> = {i} <Vector text='i' />
-              {j > 0 ? "+" : null} {j} <Vector text='j' /> {k > 0 ? "+" : null}{" "}
-              {k} <Vector text='k' />
+              {j >= 0 ? " +" : null} {j} <Vector text='j' />
+              {k >= 0 ? " +" : null} {k} <Vector text='k' />
               <br />
               Gradient: <span>&#8711;</span>
               <Vector text='u' /> = {getGradient()}

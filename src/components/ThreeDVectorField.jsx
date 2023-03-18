@@ -9,10 +9,9 @@ extend({ OrbitControls });
 export default function ThreeDVectorField() {
   const { camera, gl } = useThree();
   const axesColor = "red";
-  const [formula, setFormula] = useState({ i: "", j: "", k: "" });
-  const [values, setValues] = useState([]);
-  const { vectorData, vectorFormula, gridSize } = useContext(VectorContext);
-
+  const { vectorData, vectorFormula, gridSize, planeSelected } =
+    useContext(VectorContext);
+  console.log(planeSelected);
   return (
     <>
       <orbitControls args={[camera, gl.domElement]} />
@@ -22,7 +21,7 @@ export default function ThreeDVectorField() {
 
       {/* x,y,z axis */}
       <group>
-        <mesh position={[gridSize / 2, 0, 0]} rotation-z={Math.PI * 1.5}>
+        <mesh position={[gridSize / 2 + 2, 0, 0]} rotation-z={Math.PI * 1.5}>
           <coneGeometry args={[0.1, 0.5]} />
           <meshStandardMaterial color={axesColor} />
           <Html style={{ color: axesColor }} position={[0, 0.5, 0]}>
@@ -31,13 +30,13 @@ export default function ThreeDVectorField() {
         </mesh>
         <Line
           points={[
-            [-gridSize / 2, 0, 0],
-            [gridSize / 2, 0, 0],
+            [-gridSize / 2 - 2, 0, 0],
+            [gridSize / 2 + 2, 0, 0],
           ]}
           color='red'
           lineWidth={5}
         />
-        <mesh position={[0, gridSize / 2, 0]}>
+        <mesh position={[0, gridSize / 2 + 2, 0]}>
           <coneGeometry args={[0.1, 0.5]} />
           <meshStandardMaterial color={axesColor} />
           <Html style={{ color: axesColor }} position={[0, 0.5, 0]}>
@@ -47,13 +46,13 @@ export default function ThreeDVectorField() {
 
         <Line
           points={[
-            [0, -gridSize / 2, 0],
-            [0, gridSize / 2, 0],
+            [0, -gridSize / 2 - 2, 0],
+            [0, gridSize / 2 + 2, 0],
           ]}
           color='red'
           lineWidth={5}
         />
-        <mesh position={[0, 0, gridSize / 2]} rotation-x={Math.PI * 0.5}>
+        <mesh position={[0, 0, gridSize / 2 + 2]} rotation-x={Math.PI * 0.5}>
           <coneGeometry args={[0.1, 0.5]} />
           <meshStandardMaterial color={axesColor} />
           <Html style={{ color: axesColor }} position={[0, 0, 0.5]}>
@@ -63,38 +62,121 @@ export default function ThreeDVectorField() {
 
         <Line
           points={[
-            [0, 0, -gridSize / 2],
-            [0, 0, gridSize / 2],
+            [0, 0, -gridSize / 2 - 2],
+            [0, 0, gridSize / 2 + 2],
           ]}
           color='red'
           lineWidth={5}
         />
       </group>
       {[...vectorData].map(({ i, j, k, x, y, z }) => {
-        return (
-          <mesh
-            position={[x, y, z]}
-            key={
-              x.toString() +
-              y.toString() +
-              z.toString() +
-              i.toString() +
-              j.toString() +
-              k.toString()
-            }
-          >
-            <Arrow
-              i={i}
-              j={j}
-              k={k}
-              x={x}
-              y={y}
-              z={z}
-              formula={vectorFormula}
-              color='black'
-            />
-          </mesh>
-        );
+        if (planeSelected.plane == "Z") {
+          if (z == planeSelected.value) {
+            return (
+              <mesh
+                position={[x, y, z]}
+                key={
+                  x.toString() +
+                  y.toString() +
+                  z.toString() +
+                  i.toString() +
+                  j.toString() +
+                  k.toString()
+                }
+              >
+                <Arrow
+                  i={i}
+                  j={j}
+                  k={k}
+                  x={x}
+                  y={y}
+                  z={z}
+                  formula={vectorFormula}
+                  color='black'
+                />
+              </mesh>
+            );
+          }
+        } else if (planeSelected.plane == "Y") {
+          if (y == planeSelected.value) {
+            return (
+              <mesh
+                position={[x, y, z]}
+                key={
+                  x.toString() +
+                  y.toString() +
+                  z.toString() +
+                  i.toString() +
+                  j.toString() +
+                  k.toString()
+                }
+              >
+                <Arrow
+                  i={i}
+                  j={j}
+                  k={k}
+                  x={x}
+                  y={y}
+                  z={z}
+                  formula={vectorFormula}
+                  color='black'
+                />
+              </mesh>
+            );
+          }
+        } else if (planeSelected.plane == "X") {
+          if (x == planeSelected.value) {
+            return (
+              <mesh
+                position={[x, y, z]}
+                key={
+                  x.toString() +
+                  y.toString() +
+                  z.toString() +
+                  i.toString() +
+                  j.toString() +
+                  k.toString()
+                }
+              >
+                <Arrow
+                  i={i}
+                  j={j}
+                  k={k}
+                  x={x}
+                  y={y}
+                  z={z}
+                  formula={vectorFormula}
+                  color='black'
+                />
+              </mesh>
+            );
+          }
+        } else {
+          return (
+            <mesh
+              position={[x, y, z]}
+              key={
+                x.toString() +
+                y.toString() +
+                z.toString() +
+                i.toString() +
+                j.toString() +
+                k.toString()
+              }
+            >
+              <Arrow
+                i={i}
+                j={j}
+                k={k}
+                x={x}
+                y={y}
+                z={z}
+                formula={vectorFormula}
+                color='black'
+              />
+            </mesh>
+          );
+        }
       })}
     </>
   );
