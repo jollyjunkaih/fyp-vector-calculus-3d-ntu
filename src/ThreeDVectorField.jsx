@@ -12,49 +12,59 @@ export default function ThreeDVectorField() {
 
   const [formula, setFormula] = useState({ i: "", j: "", k: "" });
   const [values, setValues] = useState([]);
-  const gridSize = 20;
+  const gridSize = 10;
 
-  const useFormulaI = (x, y) => {
+  const useFormulaI = (x, y, z) => {
     if (formula.i) {
-      return nerdamer(formula.i, { x: x, y: y }).toString();
+      return nerdamer(formula.i, { x: x, y: y, z: z }).toString();
     }
   };
-  const useFormulaJ = (x, y) => {
+  const useFormulaJ = (x, y, z) => {
     if (formula.j) {
-      return nerdamer(formula.j, { x: x, y: y }).toString();
+      return nerdamer(formula.j, { x: x, y: y, z: z }).toString();
+    }
+  };
+  const useFormulaK = (x, y, z) => {
+    if (formula.k) {
+      return nerdamer(formula.k, { x: x, y: y, z: z }).toString();
     }
   };
   const onUpdate = () => {
-    if (formula.i && formula.j) {
+    if (formula.i && formula.j && formula.k) {
       let newValueList = [];
-      for (let x = -gridSize / 2; x < gridSize / 2; x++) {
-        for (let y = -gridSize / 2; y < gridSize / 2; y++) {
-          newValueList.push({
-            i: useFormulaI(x, y),
-            j: useFormulaJ(x, y),
-            x: x,
-            y: y,
-          });
+      for (let x = -gridSize / 2; x < gridSize / 2 + 1; x++) {
+        for (let y = -gridSize / 2; y < gridSize / 2 + 1; y++) {
+          for (let z = -gridSize / 2; z < gridSize / 2 + 1; z++) {
+            newValueList.push({
+              i: useFormulaI(x, y, z),
+              j: useFormulaJ(x, y, z),
+              k: useFormulaK(x, y, z),
+              x: x,
+              y: y,
+              z: z,
+            });
+          }
         }
       }
       setValues(newValueList);
-      console.log(nerdamer.convertToLaTeX(formula.i));
-      console.log(nerdamer.convertToLaTeX(formula.j));
     }
   };
   const displayFormula = () => {
     try {
       if (
         nerdamer.convertToLaTeX(formula.i) &&
-        nerdamer.convertToLaTeX(formula.j)
+        nerdamer.convertToLaTeX(formula.j) &&
+        nerdamer.convertToLaTeX(formula.k)
       ) {
         return (
           <div
             dangerouslySetInnerHTML={{
               __html: katex.renderToString(
-                `f(x,y) = ${nerdamer.convertToLaTeX(
+                `f(x,y,z) = ${nerdamer.convertToLaTeX(
                   formula.i
-                )} i + ${nerdamer.convertToLaTeX(formula.j)} j`
+                )} i + ${nerdamer.convertToLaTeX(
+                  formula.j
+                )} j + ${nerdamer.convertToLaTeX(formula.k)} k`
               ),
             }}
           />
@@ -67,7 +77,9 @@ export default function ThreeDVectorField() {
             <>
               <text>{`f(x,y) = ${nerdamer.convertToLaTeX(
                 formula.i
-              )} i + ${nerdamer.convertToLaTeX(formula.j)} j`}</text>
+              )} i + ${nerdamer.convertToLaTeX(
+                formula.j
+              )} j + ${nerdamer.convertToLaTeX(formula.k)} k`}</text>
               <text>
                 There is an error while parsing your formula. Please try again
               </text>
@@ -91,6 +103,7 @@ export default function ThreeDVectorField() {
 
       <directionalLight position={[1, 2, 3]} intensity={1.5} />
       <ambientLight intensity={0.5} />
+      {/* Side Menu */}
       <Html position={[12, 5, 0]}>
         <div
           style={{
@@ -115,7 +128,12 @@ export default function ThreeDVectorField() {
             value={formula.j}
             onChange={(val) => setFormula({ ...formula, j: val.target.value })}
           />
-
+          <br />
+          <text>Type the formula for k</text>
+          <input
+            value={formula.k}
+            onChange={(val) => setFormula({ ...formula, k: val.target.value })}
+          />
           <br />
           {displayFormula()}
 
@@ -133,6 +151,7 @@ export default function ThreeDVectorField() {
           </button>
         </div>
       </Html>
+      {/* x,y,z axis */}
       <group>
         <mesh position={[gridSize / 2, 0, 0]} rotation-z={Math.PI * 1.5}>
           <coneGeometry args={[0.1, 0.5]} />
@@ -161,18 +180,44 @@ export default function ThreeDVectorField() {
           color='red'
           lineWidth={5}
         />
-        <mesh>
-          <planeGeometry args={[gridSize, gridSize]} />
-          <meshStandardMaterial color='greenyellow' />
+        <mesh position={[0, 0, gridSize / 2]} rotation-x={Math.PI * 0.5}>
+          <coneGeometry args={[0.1, 0.5]} />
+          <meshStandardMaterial color={"red"} />
+          <Html position={[0, 0, 0.5]}>Z</Html>
         </mesh>
+
+        <Line
+          points={[
+            [0, 0, -gridSize / 2],
+            [0, 0, gridSize / 2],
+          ]}
+          color='red'
+          lineWidth={5}
+        />
       </group>
-      {[...values].map(({ i, j, x, y }) => {
+      {[...values].map(({ i, j, k, x, y, z }) => {
         return (
           <mesh
-            position={[x, y, 0]}
-            key={x.toString() + y.toString() + i.toString() + j.toString()}
+            position={[x, y, z]}
+            key={
+              x.toString() +
+              y.toString() +
+              z.toString() +
+              i.toString() +
+              j.toString() +
+              k.toString()
+            }
           >
-            <Arrow i={i} j={j} x={x} y={y} formula={formula} color='black' />
+            <Arrow
+              i={i}
+              j={j}
+              k={k}
+              x={x}
+              y={y}
+              z={z}
+              formula={formula}
+              color='black'
+            />
           </mesh>
         );
       })}

@@ -38,8 +38,6 @@ export default function TwoDVectorField() {
         }
       }
       setValues(newValueList);
-      console.log(nerdamer.convertToLaTeX(formula.i));
-      console.log(nerdamer.convertToLaTeX(formula.j));
     }
   };
   const displayFormula = () => {
