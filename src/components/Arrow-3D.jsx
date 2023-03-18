@@ -40,14 +40,45 @@ export default function Arrow({ i, j, k, x, y, z, color, formula }) {
     const Z = nerdamer(gradientZ.toString(), { x: x, y: y, z: z }).toString();
     return parseFloat(X) + parseFloat(Y) + parseFloat(Z);
   };
+  //X,Y,Z are the coeffecients of the unit vectos; x,y,z represent the partial derivatives
+  // so curl = (Zy-Yz)i + (Xz-Zx)j + (Yx-Xy)k
   const getCurl = () => {
-    let pdiffJwrtX = nerdamer.diff(formula.j, "x", 1);
-    pdiffJwrtX = nerdamer(pdiffJwrtX.toString(), { x: x, y: y }).toString();
-    let pdiffIwrtY = nerdamer.diff(formula.i, "y", 1);
-    pdiffIwrtY = nerdamer(pdiffIwrtY.toString(), { y: y, x: x }).toString();
+    let Zy = nerdamer(nerdamer.diff(formula.k, "y", 1).toString(), {
+      x: x,
+      y: y,
+      z: z,
+    }).toString();
+    let Yz = nerdamer(nerdamer.diff(formula.j, "z", 1).toString(), {
+      x: x,
+      y: y,
+      z: z,
+    }).toString();
+    let Xz = nerdamer(nerdamer.diff(formula.i, "z", 1).toString(), {
+      x: x,
+      y: y,
+      z: z,
+    }).toString();
+    let Zx = nerdamer(nerdamer.diff(formula.k, "x", 1).toString(), {
+      x: x,
+      y: y,
+      z: z,
+    }).toString();
+    let Yx = nerdamer(nerdamer.diff(formula.j, "x", 1).toString(), {
+      x: x,
+      y: y,
+      z: z,
+    }).toString();
+    let Xy = nerdamer(nerdamer.diff(formula.i, "y", 1).toString(), {
+      x: x,
+      y: y,
+      z: z,
+    }).toString();
+    console.log(Zy, Yz, Xz, Zx, Yx, Xy);
     return (
       <>
-        {parseFloat(pdiffJwrtX) - parseFloat(pdiffIwrtY)} <Vector text='k' />
+        {parseFloat(Zy) - parseFloat(Yz)} <Vector text='i' />{" "}
+        {parseFloat(Xz) - parseFloat(Zx)} <Vector text='j' />{" "}
+        {parseFloat(Yx) - parseFloat(Xy)} <Vector text='k' />
       </>
     );
   };
