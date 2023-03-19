@@ -5,15 +5,15 @@ import * as THREE from "three";
 import ThreeDVectorField from "./components/ThreeDVectorField";
 import { VectorProvider } from "./context/vector";
 import SideMenu from "./components/SideMenu";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, Flex, HStack, VStack } from "@chakra-ui/react";
 
 const root = ReactDOM.createRoot(document.querySelector("#root"));
 
 root.render(
   <ChakraProvider>
     <VectorProvider>
-      <div style={{ height: "100%", display: "flex", flexDirection: "row" }}>
-        <div style={{ width: "70%", height: "100%" }}>
+      <HStack height={"100%"}>
+        <Flex width={"70%"} height={"100%"}>
           <Canvas
             gl={{
               antialias: true,
@@ -29,11 +29,11 @@ root.render(
           >
             <ThreeDVectorField />
           </Canvas>
-        </div>
-        <div style={{ width: "30%" }}>
+        </Flex>
+        <Flex width={"30%"} height={"100%"}>
           <SideMenu />
-        </div>
-      </div>
+        </Flex>
+      </HStack>
     </VectorProvider>
   </ChakraProvider>
 );

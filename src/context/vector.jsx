@@ -7,6 +7,7 @@ export const VectorProvider = ({ children }) => {
   const [gridSize, setGridSize] = useState(10);
   const [planeSelected, setPlaneSelected] = useState({ plane: "", value: 0 });
   const [vectorData, setVectorData] = useState([]);
+  const [shape, setShape] = useState({ shape: "", formula: "" });
 
   return (
     <VectorContext.Provider
@@ -19,6 +20,8 @@ export const VectorProvider = ({ children }) => {
         setGridSize,
         planeSelected,
         setPlaneSelected,
+        shape,
+        setShape,
       }}
     >
       {children}

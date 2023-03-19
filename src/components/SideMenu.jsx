@@ -11,6 +11,15 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  VStack,
+  InputGroup,
+  InputRightElement,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderMark,
+  Tooltip,
 } from "@chakra-ui/react";
 import nerdamer from "nerdamer/all.min";
 import katex from "katex";
@@ -25,6 +34,8 @@ const SideMenu = () => {
     setGridSize,
     planeSelected,
     setPlaneSelected,
+    shape,
+    setShape,
   } = useContext(VectorContext);
   const [error, setError] = useState(false);
   const displayFormula = () => {
@@ -120,15 +131,15 @@ const SideMenu = () => {
       <Container height={"90%"} width={0} padding={0}>
         <Divider orientation='vertical' colorScheme='grey' />
       </Container>
-      <Flex direction={"column"}>
+      <Flex direction={"column"} overflow={"scroll"} height={"100%"}>
         <Flex
           direction={"column"}
           bgColor={"white"}
           borderRadius={5}
           boxShadow={"2px 2px #525252"}
-          width={"80%"}
-          margin={10}
-          padding={10}
+          width={"90%"}
+          margin={5}
+          padding={5}
         >
           <HStack justifyContent={"space-between"}>
             <Text>Choose a grid size </Text>
@@ -190,9 +201,9 @@ const SideMenu = () => {
             bgColor={"white"}
             borderRadius={5}
             boxShadow={"2px 2px #525252"}
-            width={"80%"}
-            margin={10}
-            padding={10}
+            width={"90%"}
+            margin={5}
+            padding={5}
           >
             {displayFormula()}
             {error ? (
@@ -217,10 +228,112 @@ const SideMenu = () => {
               vectorFormula={vectorFormula}
               setVectorFormula={setVectorFormula}
             />
-            <Button marginTop={2} onClick={onUpdate}>
+            <Button
+              marginTop={2}
+              alignSelf={"center"}
+              width={"fit-content"}
+              onClick={onUpdate}
+            >
               <Text>Update</Text>
             </Button>
           </Flex>
+        </Flex>
+        <Flex
+          direction={"column"}
+          bgColor={"white"}
+          borderRadius={5}
+          boxShadow={"2px 2px #525252"}
+          width={"90%"}
+          margin={5}
+          padding={5}
+        >
+          <Text>Add a shape</Text>
+
+          <HStack>
+            <ShapeButton
+              shapeText={"Circle"}
+              setShape={setShape}
+              shape={shape}
+            />
+            <ShapeButton
+              shapeText={"Square"}
+              setShape={setShape}
+              shape={shape}
+            />
+            <ShapeButton
+              shapeText={"Sphere"}
+              setShape={setShape}
+              shape={shape}
+            />
+            <ShapeButton shapeText={"Cube"} setShape={setShape} shape={shape} />
+          </HStack>
+
+          {shape.shape == "Circle" ? (
+            <VStack alignItems={"start"}>
+              <HStack
+                width={"100%"}
+                justifyContent={"space-between"}
+                marginTop={2}
+              >
+                <Text mb='8px'>Radius</Text>
+
+                <NumberInput
+                  size={"sm"}
+                  onChange={(val) =>
+                    setShape({
+                      ...shape,
+                      formula: { ...shape.formula, radius: parseInt(val) },
+                    })
+                  }
+                  width={"30%"}
+                  min={1}
+                  max={5}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </HStack>
+              <HStack
+                width={"100%"}
+                justifyContent={"space-between"}
+                marginTop={2}
+              >
+                <Text mb='8px'>Center</Text>
+
+                <CircleCenterInput
+                  vector='i'
+                  setShape={setShape}
+                  shape={shape}
+                />
+                <CircleCenterInput
+                  vector='j'
+                  setShape={setShape}
+                  shape={shape}
+                />
+                <CircleCenterInput
+                  vector='k'
+                  setShape={setShape}
+                  shape={shape}
+                />
+              </HStack>
+              <Text>Rotation</Text>
+              <RotationSlider
+                text={"x-axis"}
+                shape={shape}
+                setShape={setShape}
+              />
+              <RotationSlider
+                text={"y-axis"}
+                shape={shape}
+                setShape={setShape}
+              />
+            </VStack>
+          ) : (
+            <></>
+          )}
         </Flex>
       </Flex>
     </Flex>
@@ -261,5 +374,119 @@ const PlaneButton = ({ plane, planeSelected, setPlaneSelected }) => {
     >
       {plane}
     </Button>
+  );
+};
+
+const ShapeButton = ({ shapeText, shape, setShape }) => {
+  return (
+    <Button
+      colorScheme={shapeText == shape.shape ? "cyan" : "gray"}
+      onClick={() => {
+        setShape({ ...shape, shape: shapeText });
+      }}
+    >
+      {shapeText}
+    </Button>
+  );
+};
+
+const Vector = ({ text }) => {
+  return (
+    <b>
+      <i>{text}</i>
+    </b>
+  );
+};
+
+const CircleCenterInput = ({ setShape, shape, vector }) => {
+  return (
+    <InputGroup width={"20%"}>
+      <Input
+        onChange={(event) => {
+          if (vector === "i")
+            setShape({
+              ...shape,
+              formula: {
+                ...shape.formula,
+                center_x: parseInt(event.target.value),
+              },
+            });
+          else if (vector === "j")
+            setShape({
+              ...shape,
+              formula: {
+                ...shape.formula,
+                center_y: parseInt(event.target.value),
+              },
+            });
+          else if (vector === "k")
+            setShape({
+              ...shape,
+              formula: {
+                ...shape.formula,
+                center_z: parseInt(event.target.value),
+              },
+            });
+        }}
+      />
+      <InputRightElement children={<Vector text={vector} />} />
+    </InputGroup>
+  );
+};
+
+const RotationSlider = ({ text, setShape, shape }) => {
+  const [sliderValue, setSliderValue] = useState(0);
+  const [showTooltip, setShowTooltip] = React.useState(false);
+
+  return (
+    <HStack width={"100%"}>
+      <Text minWidth={"fit-content"} marginRight={5}>
+        {text}
+      </Text>
+      <Slider
+        min={-180}
+        max={180}
+        aria-label='slider-ex-1'
+        val={sliderValue}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        onChange={(val) => {
+          setSliderValue(val);
+          if (text === "x-axis")
+            setShape({
+              ...shape,
+              formula: { ...shape.formula, rotation_x: parseInt(val) },
+            });
+          else if (text === "y-axis")
+            setShape({
+              ...shape,
+              formula: { ...shape.formula, rotation_y: parseInt(val) },
+            });
+        }}
+      >
+        <SliderMark value={-90} mt='1' ml='-2.5' fontSize='sm'>
+          {"-90 \u00B0"}
+        </SliderMark>
+        <SliderMark value={0} mt='1' ml='-2.5' fontSize='sm'>
+          {"0 \u00B0"}
+        </SliderMark>
+        <SliderMark value={90} mt='1' ml='-2.5' fontSize='sm'>
+          {"90 \u00B0"}
+        </SliderMark>
+        <Tooltip
+          hasArrow
+          bg='teal.500'
+          color='white'
+          placement='top'
+          isOpen={showTooltip}
+          label={`${sliderValue} \u00B0`}
+        >
+          <SliderThumb />
+        </Tooltip>
+        <SliderTrack>
+          <SliderFilledTrack />
+        </SliderTrack>
+      </Slider>
+    </HStack>
   );
 };

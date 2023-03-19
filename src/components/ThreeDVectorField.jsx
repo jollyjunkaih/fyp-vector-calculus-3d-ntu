@@ -1,24 +1,22 @@
 import { useThree, extend, useFrame } from "@react-three/fiber";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { Html, Line, Text } from "@react-three/drei";
+import { Html, Line, Circle } from "@react-three/drei";
 import Arrow from "./Arrow-3D";
+import * as THREE from "three";
 import { VectorContext } from "../context/vector";
 extend({ OrbitControls });
 
 export default function ThreeDVectorField() {
   const { camera, gl } = useThree();
   const axesColor = "red";
-  const { vectorData, vectorFormula, gridSize, planeSelected } =
+  const { vectorData, vectorFormula, gridSize, planeSelected, shape } =
     useContext(VectorContext);
-  console.log(planeSelected);
   return (
     <>
       <orbitControls args={[camera, gl.domElement]} />
-
       <directionalLight position={[1, 2, 3]} intensity={1.5} />
       <ambientLight intensity={0.5} />
-
       {/* x,y,z axis */}
       <group>
         <mesh position={[gridSize / 2 + 2, 0, 0]} rotation-z={Math.PI * 1.5}>
@@ -69,6 +67,8 @@ export default function ThreeDVectorField() {
           lineWidth={5}
         />
       </group>
+      <Shape shape={shape.shape} formula={shape.formula} />
+      {/* arrows */}
       {[...vectorData].map(({ i, j, k, x, y, z }) => {
         if (planeSelected.plane == "Z") {
           if (z == planeSelected.value) {
@@ -181,3 +181,29 @@ export default function ThreeDVectorField() {
     </>
   );
 }
+
+const Shape = ({ shape, formula }) => {
+  console.log(shape, formula);
+  if (shape === "Circle") {
+    try {
+      const { radius, center_x, center_y, center_z, rotation_x, rotation_y } =
+        formula;
+      const shapeRef = useRef();
+      useEffect(() => {
+        shapeRef.current.rotation.x = (rotation_x / 180) * Math.PI;
+        shapeRef.current.rotation.y = (rotation_y / 180) * Math.PI;
+      }, [rotation_x, rotation_y]);
+      return (
+        <mesh ref={shapeRef} position={[center_x, center_y, center_z]}>
+          <circleGeometry args={[radius]} />
+          <meshStandardMaterial side={THREE.DoubleSide} color='greenyellow' />
+        </mesh>
+      );
+    } catch (e) {
+      {
+        console.log(e);
+        return <></>;
+      }
+    }
+  }
+};
