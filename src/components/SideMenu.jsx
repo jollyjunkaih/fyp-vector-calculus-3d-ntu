@@ -279,6 +279,7 @@ const SideMenu = () => {
 
                 <NumberInput
                   size={"sm"}
+                  defaultValue={1}
                   onChange={(val) =>
                     setShape({
                       ...shape,
@@ -327,6 +328,11 @@ const SideMenu = () => {
               />
               <RotationSlider
                 text={"y-axis"}
+                shape={shape}
+                setShape={setShape}
+              />
+              <RotationSlider
+                text={"z-axis"}
                 shape={shape}
                 setShape={setShape}
               />
@@ -402,6 +408,7 @@ const CircleCenterInput = ({ setShape, shape, vector }) => {
   return (
     <InputGroup width={"20%"}>
       <Input
+        defaultValue={0}
         onChange={(event) => {
           if (vector === "i")
             setShape({
@@ -444,8 +451,8 @@ const RotationSlider = ({ text, setShape, shape }) => {
         {text}
       </Text>
       <Slider
-        min={-180}
-        max={180}
+        min={-90}
+        max={90}
         aria-label='slider-ex-1'
         val={sliderValue}
         onMouseEnter={() => setShowTooltip(true)}
@@ -461,6 +468,11 @@ const RotationSlider = ({ text, setShape, shape }) => {
             setShape({
               ...shape,
               formula: { ...shape.formula, rotation_y: parseInt(val) },
+            });
+          else if (text === "z-axis")
+            setShape({
+              ...shape,
+              formula: { ...shape.formula, rotation_z: parseInt(val) },
             });
         }}
       >

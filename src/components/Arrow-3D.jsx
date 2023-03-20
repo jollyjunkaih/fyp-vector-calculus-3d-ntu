@@ -1,9 +1,11 @@
 import { Html, Line, Text } from "@react-three/drei";
 import React, { useState } from "react";
 import nerdamer from "nerdamer/all.min";
+import { RigidBody, CuboidCollider } from "@react-three/rapier";
 import { Euler, Quaternion, Vector3 } from "three";
 export default function Arrow({ i, j, k, x, y, z, color, formula }) {
   const [hover, setHover] = useState(false);
+  const [collision, setCollision] = useState(false);
   const quat = new Quaternion();
   const vectorMagnitude = Math.sqrt(
     Math.pow(i, 2) + Math.pow(j, 2) + Math.pow(k, 2)
@@ -76,7 +78,6 @@ export default function Arrow({ i, j, k, x, y, z, color, formula }) {
       y: y,
       z: z,
     }).toString();
-    console.log(Zy, Yz, Xz, Zx, Yx, Xy);
     return (
       <>
         {parseFloat(Zy) - parseFloat(Yz)} <Vector text='i' />
@@ -88,55 +89,68 @@ export default function Arrow({ i, j, k, x, y, z, color, formula }) {
     );
   };
   return (
-    <group
+    <RigidBody
+      type='fixed'
+      // gravityScale={0}
+      // mass={0}
       rotation={[_x, _y, _z]}
-      onPointerOver={() => {
-        setHover(true);
+      colliders={false}
+      sensor={true}
+      onIntersectionEnter={() => {
+        setCollision(true);
       }}
-      onPointerLeave={() => setHover(false)}
+      onIntersectionExit={() => setCollision(false)}
     >
-      {hover ? (
-        <Html>
-          <div
-            style={{
-              backgroundColor: "white",
-              minWidth: 250,
-              padding: 10,
-              boxShadow: "2px 2px #525252",
-              borderRadius: 5,
-            }}
-          >
-            <p>
-              Coordinate: [{x}, {y}, {z}]
-              <br />
-              Vector: <Vector text='u' /> = {i} <Vector text='i' />
-              {j >= 0 ? " +" : null} {j} <Vector text='j' />
-              {k >= 0 ? " +" : null} {k} <Vector text='k' />
-              <br />
-              Gradient: <span>&#8711;</span>
-              <Vector text='u' /> = {getGradient()}
-              <br />
-              Divergence: <span>&#8711;</span>.<Vector text='u' /> ={" "}
-              {getDivergence()}
-              <br />
-              Curl: <span>&#8711;</span>x<Vector text='u' /> = {getCurl()}
-            </p>
-          </div>
-        </Html>
-      ) : null}
-      <Line
-        points={[
-          [0.2, 0, 0],
-          [-0.2, 0, 0],
-        ]}
-        color={color}
-        lineWidth={5}
-      />
-      <mesh rotation-z={Math.PI * 1.5} position={[0.3, 0, 0]}>
-        <coneGeometry args={[0.08, 0.5]} />
-        <meshStandardMaterial color={color} />
-      </mesh>
-    </group>
+      <CuboidCollider args={[0.8, 0.1, 0.1]} />
+      <group
+        onPointerOver={() => {
+          setHover(true);
+        }}
+        onPointerLeave={() => setHover(false)}
+      >
+        {hover ? (
+          <Html>
+            <div
+              style={{
+                backgroundColor: "white",
+                minWidth: 250,
+                padding: 10,
+                boxShadow: "2px 2px #525252",
+                borderRadius: 5,
+              }}
+            >
+              <p>
+                Coordinate: [{x}, {y}, {z}]
+                <br />
+                Vector: <Vector text='u' /> = {i} <Vector text='i' />
+                {j >= 0 ? " +" : null} {j} <Vector text='j' />
+                {k >= 0 ? " +" : null} {k} <Vector text='k' />
+                <br />
+                Gradient: <span>&#8711;</span>
+                <Vector text='u' /> = {getGradient()}
+                <br />
+                Divergence: <span>&#8711;</span>.<Vector text='u' /> ={" "}
+                {getDivergence()}
+                <br />
+                Curl: <span>&#8711;</span>x<Vector text='u' /> = {getCurl()}
+              </p>
+            </div>
+          </Html>
+        ) : null}
+        <Line
+          points={[
+            [0.5, 0, 0],
+            [-0.6, 0, 0],
+          ]}
+          color={collision ? "green" : color}
+          lineWidth={5}
+        />
+        <mesh rotation-z={Math.PI * 1.5} position={[0.5, 0, 0]}>
+          <coneGeometry args={[0.08, 0.5]} />
+          <meshStandardMaterial color={collision ? "green" : color} />
+        </mesh>
+      </group>
+    </RigidBody>
   );
 }
 
