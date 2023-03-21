@@ -8,17 +8,16 @@ import {
   Debug,
   RigidBody,
   Physics,
-  CuboidCollider,
   CylinderCollider,
 } from "@react-three/rapier";
-import { VectorContext } from "../context/vector";
+import { StoreContext } from "../context/store";
 extend({ OrbitControls });
 
 export default function ThreeDVectorField() {
   const { camera, gl } = useThree();
   const axesColor = "red";
   const { vectorData, vectorFormula, gridSize, planeSelected, shape } =
-    useContext(VectorContext);
+    useContext(StoreContext);
   return (
     <>
       <orbitControls args={[camera, gl.domElement]} />
@@ -75,7 +74,7 @@ export default function ThreeDVectorField() {
         />
       </group>
       <Physics>
-        <Debug />
+        {/* <Debug /> */}
         {/* <RigidBody type='dynamic' gravityScale={0}>
           <mesh>
             <cylinderGeometry args={[5, 5, 5]} />

@@ -1,16 +1,16 @@
 import React, { createContext, useState } from "react";
 
-export const VectorContext = createContext();
+export const StoreContext = createContext();
 
-export const VectorProvider = ({ children }) => {
+export const StoreProvider = ({ children }) => {
   const [vectorFormula, setVectorFormula] = useState({ i: "", j: "", k: "" });
   const [gridSize, setGridSize] = useState(10);
   const [planeSelected, setPlaneSelected] = useState({ plane: "", value: 0 });
   const [vectorData, setVectorData] = useState([]);
   const [shape, setShape] = useState({ shape: "", formula: "" });
-
+  const [planeOnly, setPlaneOnly] = useState(false);
   return (
-    <VectorContext.Provider
+    <StoreContext.Provider
       value={{
         vectorData,
         setVectorData,
@@ -22,9 +22,11 @@ export const VectorProvider = ({ children }) => {
         setPlaneSelected,
         shape,
         setShape,
+        planeOnly,
+        setPlaneOnly,
       }}
     >
       {children}
-    </VectorContext.Provider>
+    </StoreContext.Provider>
   );
 };

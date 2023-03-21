@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
 import ThreeDVectorField from "./components/ThreeDVectorField";
-import { VectorProvider } from "./context/vector";
+import { StoreProvider } from "./context/store";
 import SideMenu from "./components/SideMenu";
 import { ChakraProvider, Flex, HStack, VStack } from "@chakra-ui/react";
 
@@ -11,7 +11,7 @@ const root = ReactDOM.createRoot(document.querySelector("#root"));
 
 root.render(
   <ChakraProvider>
-    <VectorProvider>
+    <StoreProvider>
       <HStack height={"100%"}>
         <Flex width={"70%"} height={"100%"}>
           <Canvas
@@ -34,6 +34,6 @@ root.render(
           <SideMenu />
         </Flex>
       </HStack>
-    </VectorProvider>
+    </StoreProvider>
   </ChakraProvider>
 );

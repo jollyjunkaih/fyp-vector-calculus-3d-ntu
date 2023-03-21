@@ -24,7 +24,7 @@ import {
 import nerdamer from "nerdamer/all.min";
 import katex from "katex";
 import React, { useContext, useState } from "react";
-import { VectorContext } from "../context/vector";
+import { StoreContext } from "../context/store";
 const SideMenu = () => {
   const {
     vectorFormula,
@@ -36,7 +36,9 @@ const SideMenu = () => {
     setPlaneSelected,
     shape,
     setShape,
-  } = useContext(VectorContext);
+    planeOnly,
+    setPlaneOnly,
+  } = useContext(StoreContext);
   const [error, setError] = useState(false);
   const displayFormula = () => {
     try {
@@ -336,6 +338,15 @@ const SideMenu = () => {
                 shape={shape}
                 setShape={setShape}
               />
+              <Button
+                colorScheme={planeOnly ? "cyan" : "gray"}
+                onClick={() => {
+                  setPlaneOnly(!planeOnly);
+                }}
+                alignSelf={"center"}
+              >
+                Only show vectors on the plane
+              </Button>
             </VStack>
           ) : (
             <></>
@@ -446,7 +457,7 @@ const RotationSlider = ({ text, setShape, shape }) => {
   const [showTooltip, setShowTooltip] = React.useState(false);
 
   return (
-    <HStack width={"100%"}>
+    <HStack width={"100%"} height={8}>
       <Text minWidth={"fit-content"} marginRight={5}>
         {text}
       </Text>
@@ -476,14 +487,32 @@ const RotationSlider = ({ text, setShape, shape }) => {
             });
         }}
       >
-        <SliderMark value={-90} mt='1' ml='-2.5' fontSize='sm'>
-          {"-90 \u00B0"}
+        <SliderMark
+          width={"fit-content"}
+          value={-90}
+          mt='1'
+          ml='-2.5'
+          fontSize='sm'
+        >
+          {"-90\u00B0"}
         </SliderMark>
-        <SliderMark value={0} mt='1' ml='-2.5' fontSize='sm'>
-          {"0 \u00B0"}
+        <SliderMark
+          width={"fit-content"}
+          value={0}
+          mt='1'
+          ml='-2.5'
+          fontSize='sm'
+        >
+          {"0\u00B0"}
         </SliderMark>
-        <SliderMark value={90} mt='1' ml='-2.5' fontSize='sm'>
-          {"90 \u00B0"}
+        <SliderMark
+          width={"fit-content"}
+          value={90}
+          mt='1'
+          ml='-2.5'
+          fontSize='sm'
+        >
+          {"90\u00B0"}
         </SliderMark>
         <Tooltip
           hasArrow
