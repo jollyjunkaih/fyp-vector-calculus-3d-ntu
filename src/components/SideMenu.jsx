@@ -70,11 +70,21 @@ const SideMenu = () => {
     }
   };
   return (
-    <Flex direction={"row"} alignItems={"center"} height={"100%"}>
+    <Flex
+      direction={"row"}
+      alignItems={"center"}
+      height={"100%"}
+      width={"100%"}
+    >
       <Container height={"90%"} width={0} padding={0}>
         <Divider orientation='vertical' colorScheme='grey' />
       </Container>
-      <Flex direction={"column"} overflow={"scroll"} height={"100%"}>
+      {/* this causes the weird white color crop */}
+      <Flex
+        direction={"column"}
+        //  overflow={"scroll"}
+        height={"100%"}
+      >
         <Flex
           direction={"column"}
           bgColor={"white"}

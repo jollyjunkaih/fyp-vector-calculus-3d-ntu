@@ -30,7 +30,7 @@ root.render(
             <ThreeDVectorField />
           </Canvas>
         </Flex>
-        <Flex width={"30%"} height={"100%"}>
+        <Flex width={"30%"} height={"100%"} padding={0}>
           <SideMenu />
         </Flex>
       </HStack>
