@@ -15,7 +15,7 @@ import {
   Tooltip,
   HStack,
 } from "@chakra-ui/react";
-import { Vector } from "./Styles.jsx";
+import { Vector } from "../styles/Styles.jsx";
 import nerdamer from "nerdamer/all.min";
 import katex from "katex";
 

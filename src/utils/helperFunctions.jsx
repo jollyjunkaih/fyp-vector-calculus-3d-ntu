@@ -1,7 +1,7 @@
 import nerdamer from "nerdamer/all.min";
 import { Euler, Quaternion, Vector3 } from "three";
 
-import { Vector } from "../Components/Styles";
+import { Vector } from "../styles/Styles";
 
 export function getGradient(vectorFormula, x, y, z) {
   const gradientX = nerdamer.diff(vectorFormula.i, "x", 1);

@@ -1,9 +1,8 @@
 import { Html, Line, Text } from "@react-three/drei";
 import React, { useContext, useState } from "react";
-import nerdamer from "nerdamer/all.min";
 import { RigidBody, CuboidCollider } from "@react-three/rapier";
 import { StoreContext } from "../context/store";
-import { Vector } from "./Styles.jsx";
+import { Vector } from "../styles/Styles.jsx";
 import {
   getGradient,
   getDivergence,

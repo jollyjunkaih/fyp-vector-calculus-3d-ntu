@@ -23,6 +23,7 @@ import {
   RotationSlider,
   FormulaDisplay,
 } from "./SideMenuComponents";
+import { Card } from "../styles/Styles";
 const SideMenu = () => {
   const {
     vectorFormula,
@@ -85,15 +86,7 @@ const SideMenu = () => {
         //  overflow={"scroll"}
         height={"100%"}
       >
-        <Flex
-          direction={"column"}
-          bgColor={"white"}
-          borderRadius={5}
-          boxShadow={"2px 2px #525252"}
-          width={"90%"}
-          margin={5}
-          padding={5}
-        >
+        <Card>
           <HStack justifyContent={"space-between"}>
             <Text>Choose a grid size </Text>
             <NumberInput
@@ -135,47 +128,29 @@ const SideMenu = () => {
               </NumberInputStepper>
             </NumberInput>
           </HStack>
-        </Flex>
-        <Flex direction={"column"}>
-          <Flex
-            direction={"column"}
-            bgColor={"white"}
-            borderRadius={5}
-            boxShadow={"2px 2px #525252"}
-            width={"90%"}
-            margin={5}
-            padding={5}
+        </Card>
+        <Card>
+          <FormulaDisplay />
+          {error ? (
+            <Text fontSize={"xs"} color='red'>
+              While our Math Latex parser works for this equation, regretabbly,
+              we are unable to parse it with our math engine, please try
+              something else
+            </Text>
+          ) : null}
+          <FormulaInput vector={"i"} />
+          <FormulaInput vector={"j"} />
+          <FormulaInput vector={"k"} />
+          <Button
+            marginTop={2}
+            alignSelf={"center"}
+            width={"fit-content"}
+            onClick={onUpdate}
           >
-            <FormulaDisplay />
-            {error ? (
-              <Text fontSize={"xs"} color='red'>
-                While our Math Latex parser works for this equation,
-                regretabbly, we are unable to parse it with our math engine,
-                please try something else
-              </Text>
-            ) : null}
-            <FormulaInput vector={"i"} />
-            <FormulaInput vector={"j"} />
-            <FormulaInput vector={"k"} />
-            <Button
-              marginTop={2}
-              alignSelf={"center"}
-              width={"fit-content"}
-              onClick={onUpdate}
-            >
-              <Text>Update</Text>
-            </Button>
-          </Flex>
-        </Flex>
-        <Flex
-          direction={"column"}
-          bgColor={"white"}
-          borderRadius={5}
-          boxShadow={"2px 2px #525252"}
-          width={"90%"}
-          margin={5}
-          padding={5}
-        >
+            <Text>Update</Text>
+          </Button>
+        </Card>
+        <Card>
           <Text>Add a shape</Text>
 
           <HStack>
@@ -242,7 +217,7 @@ const SideMenu = () => {
           ) : (
             <></>
           )}
-        </Flex>
+        </Card>
       </Flex>
     </Flex>
   );
