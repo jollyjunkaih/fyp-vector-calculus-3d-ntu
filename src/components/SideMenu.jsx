@@ -2,7 +2,6 @@ import {
   Container,
   Divider,
   Flex,
-  Input,
   Text,
   Button,
   HStack,
@@ -12,23 +11,21 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   VStack,
-  InputGroup,
-  InputRightElement,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-  SliderMark,
-  Tooltip,
 } from "@chakra-ui/react";
 import nerdamer from "nerdamer/all.min";
-import katex from "katex";
 import React, { useContext, useState } from "react";
 import { StoreContext } from "../context/store";
+import {
+  FormulaInput,
+  PlaneButton,
+  ShapeButton,
+  CircleCenterInput,
+  RotationSlider,
+  FormulaDisplay,
+} from "./SideMenuComponents";
 const SideMenu = () => {
   const {
     vectorFormula,
-    setVectorFormula,
     setVectorData,
     gridSize,
     setGridSize,
@@ -40,62 +37,6 @@ const SideMenu = () => {
     setPlaneOnly,
   } = useContext(StoreContext);
   const [error, setError] = useState(false);
-  const displayFormula = () => {
-    try {
-      if (
-        nerdamer.convertToLaTeX(vectorFormula.i) &&
-        nerdamer.convertToLaTeX(vectorFormula.j) &&
-        nerdamer.convertToLaTeX(vectorFormula.k)
-      ) {
-        return (
-          <div
-            style={{
-              borderRadius: 5,
-              borderWidth: 2,
-              borderColor: "black",
-              padding: 10,
-              display: "flex",
-              justifyContent: "center",
-            }}
-            dangerouslySetInnerHTML={{
-              __html: katex.renderToString(
-                `f(x,y,z) = ${nerdamer.convertToLaTeX(
-                  vectorFormula.i
-                )} i + ${nerdamer.convertToLaTeX(
-                  vectorFormula.j
-                )} j + ${nerdamer.convertToLaTeX(vectorFormula.k)} k`
-              ),
-            }}
-          />
-        );
-      }
-    } catch (e) {
-      {
-        try {
-          return (
-            <>
-              <Text>{`f(x,y) = ${nerdamer.convertToLaTeX(
-                vectorFormula.i
-              )} i + ${nerdamer.convertToLaTeX(
-                vectorFormula.j
-              )} j + ${nerdamer.convertToLaTeX(vectorFormula.k)} k`}</Text>
-              <Text fontSize={"xs"} color='red'>
-                There is something wrong with your formula. Please try again
-              </Text>
-            </>
-          );
-        } catch (e) {
-          return (
-            <>
-              <Text color='red'>
-                There is something wrong with your formula. Please try again
-              </Text>
-            </>
-          );
-        }
-      }
-    }
-  };
 
   const useFormula = (x, y, z, vectorFormula) => {
     if (vectorFormula) {
@@ -166,21 +107,9 @@ const SideMenu = () => {
 
           <Text>Choose a plane to inspect</Text>
           <HStack>
-            <PlaneButton
-              plane={"X"}
-              planeSelected={planeSelected}
-              setPlaneSelected={setPlaneSelected}
-            />
-            <PlaneButton
-              plane={"Y"}
-              planeSelected={planeSelected}
-              setPlaneSelected={setPlaneSelected}
-            />
-            <PlaneButton
-              plane={"Z"}
-              planeSelected={planeSelected}
-              setPlaneSelected={setPlaneSelected}
-            />
+            <PlaneButton plane={"X"} />
+            <PlaneButton plane={"Y"} />
+            <PlaneButton plane={"Z"} />
             <NumberInput
               min={-gridSize / 2}
               max={gridSize / 2}
@@ -207,7 +136,7 @@ const SideMenu = () => {
             margin={5}
             padding={5}
           >
-            {displayFormula()}
+            <FormulaDisplay />
             {error ? (
               <Text fontSize={"xs"} color='red'>
                 While our Math Latex parser works for this equation,
@@ -215,21 +144,9 @@ const SideMenu = () => {
                 please try something else
               </Text>
             ) : null}
-            <FormulaInput
-              vector={"i"}
-              vectorFormula={vectorFormula}
-              setVectorFormula={setVectorFormula}
-            />
-            <FormulaInput
-              vector={"j"}
-              vectorFormula={vectorFormula}
-              setVectorFormula={setVectorFormula}
-            />
-            <FormulaInput
-              vector={"k"}
-              vectorFormula={vectorFormula}
-              setVectorFormula={setVectorFormula}
-            />
+            <FormulaInput vector={"i"} />
+            <FormulaInput vector={"j"} />
+            <FormulaInput vector={"k"} />
             <Button
               marginTop={2}
               alignSelf={"center"}
@@ -252,25 +169,13 @@ const SideMenu = () => {
           <Text>Add a shape</Text>
 
           <HStack>
-            <ShapeButton
-              shapeText={"Circle"}
-              setShape={setShape}
-              shape={shape}
-            />
-            <ShapeButton
-              shapeText={"Square"}
-              setShape={setShape}
-              shape={shape}
-            />
-            <ShapeButton
-              shapeText={"Sphere"}
-              setShape={setShape}
-              shape={shape}
-            />
-            <ShapeButton shapeText={"Cube"} setShape={setShape} shape={shape} />
+            <ShapeButton shapeText={"Circle"} />
+            <ShapeButton shapeText={"Square"} />
+            <ShapeButton shapeText={"Sphere"} />
+            <ShapeButton shapeText={"Cube"} />
           </HStack>
 
-          {shape.shape == "Circle" ? (
+          {shape.shapeType == "Circle" ? (
             <VStack alignItems={"start"}>
               <HStack
                 width={"100%"}
@@ -306,38 +211,14 @@ const SideMenu = () => {
               >
                 <Text mb='8px'>Center</Text>
 
-                <CircleCenterInput
-                  vector='i'
-                  setShape={setShape}
-                  shape={shape}
-                />
-                <CircleCenterInput
-                  vector='j'
-                  setShape={setShape}
-                  shape={shape}
-                />
-                <CircleCenterInput
-                  vector='k'
-                  setShape={setShape}
-                  shape={shape}
-                />
+                <CircleCenterInput vector='i' />
+                <CircleCenterInput vector='j' />
+                <CircleCenterInput vector='k' />
               </HStack>
               <Text>Rotation</Text>
-              <RotationSlider
-                text={"x-axis"}
-                shape={shape}
-                setShape={setShape}
-              />
-              <RotationSlider
-                text={"y-axis"}
-                shape={shape}
-                setShape={setShape}
-              />
-              <RotationSlider
-                text={"z-axis"}
-                shape={shape}
-                setShape={setShape}
-              />
+              <RotationSlider text={"x-axis"} />
+              <RotationSlider text={"y-axis"} />
+              <RotationSlider text={"z-axis"} />
               <Button
                 colorScheme={planeOnly ? "cyan" : "gray"}
                 onClick={() => {
@@ -357,177 +238,3 @@ const SideMenu = () => {
   );
 };
 export default SideMenu;
-
-const FormulaInput = ({ vector, vectorFormula, setVectorFormula }) => {
-  return (
-    <Container marginTop={2}>
-      <Text>Type the formula for {vector}</Text>
-      <Input
-        onChange={(val) => {
-          if (vector === "i") {
-            setVectorFormula({ ...vectorFormula, i: val.target.value });
-          } else if (vector === "j") {
-            setVectorFormula({ ...vectorFormula, j: val.target.value });
-          } else if (vector === "k") {
-            setVectorFormula({ ...vectorFormula, k: val.target.value });
-          }
-        }}
-      />
-    </Container>
-  );
-};
-
-const PlaneButton = ({ plane, planeSelected, setPlaneSelected }) => {
-  return (
-    <Button
-      colorScheme={planeSelected.plane == plane ? "cyan" : "gray"}
-      onClick={() => {
-        if (planeSelected.plane != plane)
-          setPlaneSelected({ ...planeSelected, plane: plane });
-        else {
-          setPlaneSelected({ ...planeSelected, plane: "" });
-        }
-      }}
-    >
-      {plane}
-    </Button>
-  );
-};
-
-const ShapeButton = ({ shapeText, shape, setShape }) => {
-  return (
-    <Button
-      colorScheme={shapeText == shape.shape ? "cyan" : "gray"}
-      onClick={() => {
-        setShape({ ...shape, shape: shapeText });
-      }}
-    >
-      {shapeText}
-    </Button>
-  );
-};
-
-const Vector = ({ text }) => {
-  return (
-    <b>
-      <i>{text}</i>
-    </b>
-  );
-};
-
-const CircleCenterInput = ({ setShape, shape, vector }) => {
-  return (
-    <InputGroup width={"20%"}>
-      <Input
-        defaultValue={0}
-        onChange={(event) => {
-          if (vector === "i")
-            setShape({
-              ...shape,
-              formula: {
-                ...shape.formula,
-                center_x: parseInt(event.target.value),
-              },
-            });
-          else if (vector === "j")
-            setShape({
-              ...shape,
-              formula: {
-                ...shape.formula,
-                center_y: parseInt(event.target.value),
-              },
-            });
-          else if (vector === "k")
-            setShape({
-              ...shape,
-              formula: {
-                ...shape.formula,
-                center_z: parseInt(event.target.value),
-              },
-            });
-        }}
-      />
-      <InputRightElement children={<Vector text={vector} />} />
-    </InputGroup>
-  );
-};
-
-const RotationSlider = ({ text, setShape, shape }) => {
-  const [sliderValue, setSliderValue] = useState(0);
-  const [showTooltip, setShowTooltip] = React.useState(false);
-
-  return (
-    <HStack width={"100%"} height={8}>
-      <Text minWidth={"fit-content"} marginRight={5}>
-        {text}
-      </Text>
-      <Slider
-        min={-90}
-        max={90}
-        aria-label='slider-ex-1'
-        val={sliderValue}
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-        onChange={(val) => {
-          setSliderValue(val);
-          if (text === "x-axis")
-            setShape({
-              ...shape,
-              formula: { ...shape.formula, rotation_x: parseInt(val) },
-            });
-          else if (text === "y-axis")
-            setShape({
-              ...shape,
-              formula: { ...shape.formula, rotation_y: parseInt(val) },
-            });
-          else if (text === "z-axis")
-            setShape({
-              ...shape,
-              formula: { ...shape.formula, rotation_z: parseInt(val) },
-            });
-        }}
-      >
-        <SliderMark
-          width={"fit-content"}
-          value={-90}
-          mt='1'
-          ml='-2.5'
-          fontSize='sm'
-        >
-          {"-90\u00B0"}
-        </SliderMark>
-        <SliderMark
-          width={"fit-content"}
-          value={0}
-          mt='1'
-          ml='-2.5'
-          fontSize='sm'
-        >
-          {"0\u00B0"}
-        </SliderMark>
-        <SliderMark
-          width={"fit-content"}
-          value={90}
-          mt='1'
-          ml='-2.5'
-          fontSize='sm'
-        >
-          {"90\u00B0"}
-        </SliderMark>
-        <Tooltip
-          hasArrow
-          bg='teal.500'
-          color='white'
-          placement='top'
-          isOpen={showTooltip}
-          label={`${sliderValue} \u00B0`}
-        >
-          <SliderThumb />
-        </Tooltip>
-        <SliderTrack>
-          <SliderFilledTrack />
-        </SliderTrack>
-      </Slider>
-    </HStack>
-  );
-};

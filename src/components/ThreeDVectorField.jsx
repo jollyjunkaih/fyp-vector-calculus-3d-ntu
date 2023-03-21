@@ -3,7 +3,8 @@ import { useState, useContext, useEffect, useRef } from "react";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Html, Line, Circle } from "@react-three/drei";
 import Arrow from "./Arrow-3D";
-import * as THREE from "three";
+import { Shape } from "./Shapes";
+
 import {
   Debug,
   RigidBody,
@@ -16,7 +17,7 @@ extend({ OrbitControls });
 export default function ThreeDVectorField() {
   const { camera, gl } = useThree();
   const axesColor = "red";
-  const { vectorData, vectorFormula, gridSize, planeSelected, shape } =
+  const { vectorData, vectorFormula, gridSize, planeSelected } =
     useContext(StoreContext);
   return (
     <>
@@ -75,13 +76,8 @@ export default function ThreeDVectorField() {
       </group>
       <Physics>
         {/* <Debug /> */}
-        {/* <RigidBody type='dynamic' gravityScale={0}>
-          <mesh>
-            <cylinderGeometry args={[5, 5, 5]} />
-            <meshStandardMaterial side={THREE.DoubleSide} color='greenyellow' />
-          </mesh>
-        </RigidBody> */}
-        <Shape shape={shape.shape} formula={shape.formula} />
+
+        <Shape />
         {/* arrows */}
         {[...vectorData].map(({ i, j, k, x, y, z }) => {
           if (planeSelected.plane == "Z") {
@@ -139,7 +135,7 @@ export default function ThreeDVectorField() {
               );
             }
           } else if (planeSelected.plane == "X") {
-            if (x == planeSelected.value && y == 0 && z == 0) {
+            if (x == planeSelected.value) {
               return (
                 <mesh
                   position={[x, y, z]}
@@ -196,58 +192,3 @@ export default function ThreeDVectorField() {
     </>
   );
 }
-
-const Shape = ({ shape, formula }) => {
-  if (shape === "Circle") {
-    try {
-      const {
-        radius = 1,
-        center_x = 0,
-        center_y = 0,
-        center_z = 0,
-        rotation_x = 0,
-        rotation_y = 0,
-        rotation_z = 0,
-      } = formula;
-      const shapeRef = useRef();
-      const bodyRef = useRef();
-
-      useEffect(() => {
-        const eulerAngles = new THREE.Euler(
-          (rotation_x / 180) * Math.PI,
-          (rotation_y / 180) * Math.PI,
-          (rotation_z / 180) * Math.PI
-        );
-        const { _w, _x, _y, _z } = new THREE.Quaternion().setFromEuler(
-          eulerAngles
-        );
-        const quat = { w: _w, x: _x, y: _y, z: _z };
-        bodyRef.current.setRotation(quat);
-      }, [rotation_x, rotation_y, rotation_z]);
-      useEffect(() => {
-        shapeRef.current.setRadius(radius);
-      }, [radius]);
-      return (
-        <RigidBody
-          ref={bodyRef}
-          type='dynamic'
-          gravityScale={0}
-          position={[center_x, center_y, center_z]}
-          colliders={false}
-        >
-          <CylinderCollider ref={shapeRef} args={[0.05, radius]} />
-          <mesh>
-            <cylinderGeometry args={[radius, radius, 0.05]} />
-            <meshStandardMaterial side={THREE.DoubleSide} color='greenyellow' />
-          </mesh>
-        </RigidBody>
-      );
-    } catch (e) {
-      {
-        console.log("error");
-        console.log(e);
-        return <></>;
-      }
-    }
-  }
-};

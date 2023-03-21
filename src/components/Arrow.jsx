@@ -2,7 +2,7 @@ import { Html, Line, Text } from "@react-three/drei";
 import React, { useState } from "react";
 import nerdamer from "nerdamer/all.min";
 
-export default function Arrow({ i, j, k, x, y, color, formula }) {
+function Arrow({ i, j, k, x, y, color, formula }) {
   const [hover, setHover] = useState(false);
   let degreeDeviation = Math.atan(j / i);
   //add pi rotation to mirror about y-axis if i vector is negative

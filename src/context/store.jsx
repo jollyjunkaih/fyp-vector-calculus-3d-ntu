@@ -7,7 +7,7 @@ export const StoreProvider = ({ children }) => {
   const [gridSize, setGridSize] = useState(10);
   const [planeSelected, setPlaneSelected] = useState({ plane: "", value: 0 });
   const [vectorData, setVectorData] = useState([]);
-  const [shape, setShape] = useState({ shape: "", formula: "" });
+  const [shape, setShape] = useState({ shapeType: "", formula: "" });
   const [planeOnly, setPlaneOnly] = useState(false);
   return (
     <StoreContext.Provider

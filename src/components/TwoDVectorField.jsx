@@ -7,7 +7,7 @@ import nerdamer from "nerdamer/all.min";
 import katex from "katex";
 extend({ OrbitControls });
 
-export default function TwoDVectorField() {
+function TwoDVectorField() {
   const { camera, gl } = useThree();
 
   const [formula, setFormula] = useState({ i: "", j: "", k: "" });
