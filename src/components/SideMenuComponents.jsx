@@ -77,32 +77,36 @@ export const CircleCenterInput = ({ vector }) => {
   return (
     <InputGroup width={"20%"}>
       <Input
+        type='number'
         defaultValue={0}
         onChange={(event) => {
-          if (vector === "i")
-            setShape({
-              ...shape,
-              formula: {
-                ...shape.formula,
-                center_x: parseInt(event.target.value),
-              },
-            });
-          else if (vector === "j")
-            setShape({
-              ...shape,
-              formula: {
-                ...shape.formula,
-                center_y: parseInt(event.target.value),
-              },
-            });
-          else if (vector === "k")
-            setShape({
-              ...shape,
-              formula: {
-                ...shape.formula,
-                center_z: parseInt(event.target.value),
-              },
-            });
+          console.log(event.target.value);
+          if (event.target.value != "" && event.target.value !== "-") {
+            if (vector === "i") {
+              setShape({
+                ...shape,
+                formula: {
+                  ...shape.formula,
+                  center_x: parseInt(event.target.value),
+                },
+              });
+            } else if (vector === "j")
+              setShape({
+                ...shape,
+                formula: {
+                  ...shape.formula,
+                  center_y: parseInt(event.target.value),
+                },
+              });
+            else if (vector === "k")
+              setShape({
+                ...shape,
+                formula: {
+                  ...shape.formula,
+                  center_z: parseInt(event.target.value),
+                },
+              });
+          }
         }}
       />
       <InputRightElement children={<Vector text={vector} />} />
