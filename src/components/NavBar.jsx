@@ -9,7 +9,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import React from "react";
-import { usePath } from "hookrouter";
+import { useRouter, useRoute } from "wouter";
 import { navBarColor } from "../styles/Colours";
 import {
   AiOutlineTwitter,
@@ -18,31 +18,39 @@ import {
 } from "react-icons/ai";
 
 export const NavBar = () => {
-  const path = usePath();
+  const router = useRouter();
+  const route = useRoute("/playground");
+  console.log(router);
+
+  console.log(route);
+  const path = "/";
   return (
     <HStack padding={4} width={"100%"} bgColor={navBarColor}>
       <Container width={"33%"}></Container>
       <HStack width={"33%"} justifyContent={"space-around"}>
         <Breadcrumb color={"white"} separator='-'>
-          <BreadcrumbItem isCurrentPage={path == "/" ? true : false}>
+          <BreadcrumbItem isCurrentPage={useRoute("/")[0]}>
             <BreadcrumbLink href='/'>
-              <Text fontSize={"xl"} as={path == "/" ? "b" : null}>
+              <Text fontSize={"xl"} as={useRoute("/")[0] ? "b" : null}>
                 Home
               </Text>
             </BreadcrumbLink>
           </BreadcrumbItem>
 
-          <BreadcrumbItem isCurrentPage={path == "/lesson" ? true : false}>
+          <BreadcrumbItem isCurrentPage={useRoute("/lesson")[0]}>
             <BreadcrumbLink href='/lesson'>
-              <Text fontSize={"xl"} as={path == "/lesson" ? "b" : null}>
+              <Text fontSize={"xl"} as={useRoute("/lesson")[0] ? "b" : null}>
                 Lesson
               </Text>
             </BreadcrumbLink>
           </BreadcrumbItem>
 
-          <BreadcrumbItem isCurrentPage={path == "/playground" ? true : false}>
+          <BreadcrumbItem isCurrentPage={useRoute("/playground")[0]}>
             <BreadcrumbLink href='/playground'>
-              <Text fontSize={"xl"} as={path == "/playground" ? "b" : null}>
+              <Text
+                fontSize={"xl"}
+                as={useRoute("/playground")[0] ? "b" : null}
+              >
                 Playground
               </Text>
             </BreadcrumbLink>
