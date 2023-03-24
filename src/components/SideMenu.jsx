@@ -90,10 +90,13 @@ const SideMenu = () => {
               step={2}
               size={"sm"}
               width={"30%"}
-              min={5}
+              min={0}
               max={30}
               value={gridSize}
               onChange={(val) => {
+                if (val % 2 == 1) {
+                  val = val - 1;
+                }
                 setGridSize(val);
               }}
             >
@@ -127,7 +130,17 @@ const SideMenu = () => {
           </HStack>
         </Card>
         <Card>
-          <FormulaDisplay />
+          <Flex
+            borderRadius={5}
+            borderWidth={2}
+            borderColor={"black"}
+            padding={4}
+            height={"fit-content"}
+            justifyContent={"center"}
+          >
+            <FormulaDisplay />
+          </Flex>
+
           {error ? (
             <Text fontSize={"xs"} color='red'>
               While our Math Latex parser works for this equation, regretabbly,

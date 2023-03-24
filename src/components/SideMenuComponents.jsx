@@ -19,6 +19,7 @@ import { Vector } from "../styles/Styles.jsx";
 import nerdamer from "nerdamer/all.min";
 import katex from "katex";
 import { buttonColor, selectedButtonColor } from "../styles/Colours";
+import { InlineMath } from "react-katex";
 
 export const FormulaInput = ({ vector }) => {
   const { vectorFormula, setVectorFormula } = useContext(StoreContext);
@@ -205,25 +206,11 @@ export const FormulaDisplay = () => {
       nerdamer.convertToLaTeX(vectorFormula.k)
     ) {
       return (
-        <div
-          style={{
-            borderRadius: 5,
-            borderWidth: 2,
-            borderColor: "black",
-            padding: 10,
-            display: "flex",
-            justifyContent: "center",
-          }}
-          dangerouslySetInnerHTML={{
-            __html: katex.renderToString(
-              `f(x,y,z) = ${nerdamer.convertToLaTeX(
-                vectorFormula.i
-              )} i + ${nerdamer.convertToLaTeX(
-                vectorFormula.j
-              )} j + ${nerdamer.convertToLaTeX(vectorFormula.k)} k`
-            ),
-          }}
-        />
+        <InlineMath>{`f(x,y,z) = ${nerdamer.convertToLaTeX(
+          vectorFormula.i
+        )} i + ${nerdamer.convertToLaTeX(
+          vectorFormula.j
+        )} j + ${nerdamer.convertToLaTeX(vectorFormula.k)} k`}</InlineMath>
       );
     }
   } catch (e) {
@@ -236,18 +223,19 @@ export const FormulaDisplay = () => {
             )} i + ${nerdamer.convertToLaTeX(
               vectorFormula.j
             )} j + ${nerdamer.convertToLaTeX(vectorFormula.k)} k`}</Text>
-            <Text fontSize={"xs"} color='red'>
-              There is something wrong with your formula. Please try again
-            </Text>
+            <br />
+            <Text>{`f(x,y) = ${nerdamer.convertToLaTeX(
+              vectorFormula.i
+            )} i + ${nerdamer.convertToLaTeX(
+              vectorFormula.j
+            )} j + ${nerdamer.convertToLaTeX(vectorFormula.k)} k`}</Text>
           </>
         );
       } catch (e) {
         return (
-          <>
-            <Text color='red'>
-              There is something wrong with your formula. Please try again
-            </Text>
-          </>
+          <Text color='red'>
+            There is something wrong with your formula. <br /> Please try again
+          </Text>
         );
       }
     }
