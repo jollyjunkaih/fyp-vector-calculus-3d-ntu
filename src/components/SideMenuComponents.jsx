@@ -18,6 +18,7 @@ import {
 import { Vector } from "../styles/Styles.jsx";
 import nerdamer from "nerdamer/all.min";
 import katex from "katex";
+import { buttonColor, selectedButtonColor } from "../styles/Colours";
 
 export const FormulaInput = ({ vector }) => {
   const { vectorFormula, setVectorFormula } = useContext(StoreContext);
@@ -44,7 +45,7 @@ export const PlaneButton = ({ plane }) => {
 
   return (
     <Button
-      colorScheme={planeSelected.plane == plane ? "cyan" : "gray"}
+      bgColor={planeSelected.plane == plane ? selectedButtonColor : buttonColor}
       onClick={() => {
         if (planeSelected.plane != plane)
           setPlaneSelected({ ...planeSelected, plane: plane });
@@ -63,7 +64,7 @@ export const ShapeButton = ({ shapeText }) => {
 
   return (
     <Button
-      colorScheme={shapeText == shape.shapeType ? "cyan" : "gray"}
+      bgColor={shapeText == shape.shapeType ? selectedButtonColor : buttonColor}
       onClick={() => {
         setShape({ ...shape, shapeType: shapeText });
       }}

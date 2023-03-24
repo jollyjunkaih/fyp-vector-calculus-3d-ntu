@@ -24,6 +24,7 @@ import {
   FormulaDisplay,
 } from "./SideMenuComponents";
 import { Card } from "../styles/Styles";
+import { buttonColor, selectedButtonColor } from "../styles/Colours";
 const SideMenu = () => {
   const {
     vectorFormula,
@@ -81,11 +82,7 @@ const SideMenu = () => {
         <Divider orientation='vertical' colorScheme='grey' />
       </Container>
       {/* this causes the weird white color crop */}
-      <Flex
-        direction={"column"}
-        //  overflow={"scroll"}
-        height={"100%"}
-      >
+      <Flex direction={"column"} height={"100%"}>
         <Card>
           <HStack justifyContent={"space-between"}>
             <Text>Choose a grid size </Text>
@@ -146,6 +143,7 @@ const SideMenu = () => {
             alignSelf={"center"}
             width={"fit-content"}
             onClick={onUpdate}
+            bgColor={buttonColor}
           >
             <Text>Update</Text>
           </Button>
@@ -205,7 +203,7 @@ const SideMenu = () => {
               <RotationSlider text={"y-axis"} />
               <RotationSlider text={"z-axis"} />
               <Button
-                colorScheme={planeOnly ? "cyan" : "gray"}
+                bgColor={planeOnly ? selectedButtonColor : buttonColor}
                 onClick={() => {
                   setPlaneOnly(!planeOnly);
                 }}
