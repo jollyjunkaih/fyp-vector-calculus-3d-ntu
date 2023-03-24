@@ -114,24 +114,12 @@ const Circle = ({}) => {
                 2
               )}k`}
               <br />
-              {`Flux: ${getFluxThroughCircularSurface(
+              {`Flux through the surface: ${getFluxThroughCircularSurface(
                 vectorFormula,
                 normalVector,
                 radius,
                 circleFormula
               )}`}
-              {/* Vector: <Vector text='u' /> = {i} <Vector text='i' />
-                  {j >= 0 ? " +" : null} {j} <Vector text='j' />
-                  {k >= 0 ? " +" : null} {k} <Vector text='k' />
-                  <br />
-                  Gradient: <span>&#8711;</span>
-                  <Vector text='u' /> = {getGradient(vectorFormula, x, y, z)}
-                  <br />
-                  Divergence: <span>&#8711;</span>.<Vector text='u' /> ={" "}
-                  {getDivergence(vectorFormula, x, y, z)}
-                  <br />
-                  Curl: <span>&#8711;</span>x<Vector text='u' /> ={" "}
-                  {getCurl(vectorFormula, x, y, z)} */}
             </p>
           </div>
         </Html>
@@ -193,5 +181,5 @@ const getFluxThroughCircularSurface = (
     finalValues[0] * normal.x +
     finalValues[1] * normal.y +
     finalValues[2] * normal.z;
-  return flux;
+  return flux.toFixed(2);
 };

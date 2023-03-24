@@ -12,5 +12,5 @@ const routes = {
 
 export const Routes = () => {
   const routeResult = useRoutes(routes);
-  return routeResult || <PlaygroundPage />;
+  return routeResult || <NotFoundPage />;
 };
