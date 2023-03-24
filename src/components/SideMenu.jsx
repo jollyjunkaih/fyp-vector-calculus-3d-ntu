@@ -130,16 +130,20 @@ const SideMenu = () => {
           </HStack>
         </Card>
         <Card>
-          <Flex
-            borderRadius={5}
-            borderWidth={2}
-            borderColor={"black"}
-            padding={4}
-            height={"fit-content"}
-            justifyContent={"center"}
-          >
-            <FormulaDisplay />
-          </Flex>
+          {vectorFormula.i && vectorFormula.j && vectorFormula.k ? (
+            <Flex
+              borderRadius={5}
+              borderWidth={2}
+              borderColor={selectedButtonColor}
+              padding={4}
+              alignSelf={"center"}
+              height={"fit-content"}
+              width={"90%"}
+              justifyContent={"center"}
+            >
+              <FormulaDisplay />
+            </Flex>
+          ) : null}
 
           {error ? (
             <Text fontSize={"xs"} color='red'>
