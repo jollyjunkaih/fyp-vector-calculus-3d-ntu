@@ -22,7 +22,7 @@ import {
   CircleCenterInput,
   RotationSlider,
   FormulaDisplay,
-} from "./SideMenuComponents";
+} from "./smaller_components/SideMenuComponents";
 import { Card } from "../styles/Styles";
 import { buttonColor, selectedButtonColor } from "../styles/Colours";
 const SideMenu = () => {

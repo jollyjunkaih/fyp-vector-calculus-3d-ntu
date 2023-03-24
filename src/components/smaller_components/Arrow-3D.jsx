@@ -1,14 +1,14 @@
 import { Html, Line, Text } from "@react-three/drei";
 import React, { useContext, useState } from "react";
 import { RigidBody, CuboidCollider } from "@react-three/rapier";
-import { StoreContext } from "../context/store";
-import { Vector } from "../styles/Styles.jsx";
+import { StoreContext } from "../../context/store";
+import { Vector } from "../../styles/Styles.jsx";
 import {
   getGradient,
   getDivergence,
   getCurl,
   getEulerRotation,
-} from "../utils/helperFunctions";
+} from "../../utils/helperFunctions";
 export default function Arrow({ i, j, k, x, y, z }) {
   const [collision, setCollision] = useState(false);
 

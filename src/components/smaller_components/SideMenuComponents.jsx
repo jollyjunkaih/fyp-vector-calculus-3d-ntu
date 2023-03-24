@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { StoreContext } from "../context/store";
+import { StoreContext } from "../../context/store";
 import {
   Container,
   Button,
@@ -15,10 +15,10 @@ import {
   Tooltip,
   HStack,
 } from "@chakra-ui/react";
-import { Vector } from "../styles/Styles.jsx";
+import { Vector } from "../../styles/Styles.jsx";
 import nerdamer from "nerdamer/all.min";
 import katex from "katex";
-import { buttonColor, selectedButtonColor } from "../styles/Colours";
+import { buttonColor, selectedButtonColor } from "../../styles/Colours";
 import { InlineMath } from "react-katex";
 
 export const FormulaInput = ({ vector }) => {

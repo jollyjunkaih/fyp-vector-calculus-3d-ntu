@@ -2,8 +2,8 @@ import { useThree, extend, useFrame } from "@react-three/fiber";
 import { useState, useContext, useEffect, useRef } from "react";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Html, Line, Circle } from "@react-three/drei";
-import Arrow from "./Arrow-3D";
-import { Shape } from "./Shapes";
+import Arrow from "./smaller_components/Arrow-3D";
+import { Shape } from "./smaller_components/Shapes";
 
 import {
   Debug,

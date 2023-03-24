@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 import { RigidBody, CylinderCollider, euler } from "@react-three/rapier";
-import { StoreContext } from "../context/store";
+import { StoreContext } from "../../context/store";
 import { Html } from "@react-three/drei";
 import nerdamer from "nerdamer/all.min";
 export const Shape = () => {
