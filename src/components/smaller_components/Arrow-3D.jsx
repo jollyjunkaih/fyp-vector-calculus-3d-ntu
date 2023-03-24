@@ -1,7 +1,7 @@
 import { Html, Line, Text } from "@react-three/drei";
 import React, { useContext, useState } from "react";
 import { RigidBody, CuboidCollider } from "@react-three/rapier";
-import { StoreContext } from "../../context/store";
+import { PlaygroundStoreContext } from "../../context/playgroundStore";
 import { Vector } from "../../styles/Styles.jsx";
 import {
   getGradient,
@@ -34,7 +34,7 @@ export default function Arrow({ i, j, k, x, y, z }) {
 const ArrowMesh = ({ collision, x, y, z, i, j, k }) => {
   const color = "black";
   const [hover, setHover] = useState(false);
-  const { planeOnly, vectorFormula } = useContext(StoreContext);
+  const { planeOnly, vectorFormula } = useContext(PlaygroundStoreContext);
   if (planeOnly) {
     if (collision)
       return (

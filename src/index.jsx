@@ -1,15 +1,17 @@
 import "./style.css";
 import ReactDOM from "react-dom/client";
-import { StoreProvider } from "./context/store";
 import { ChakraProvider, Flex, HStack, VStack } from "@chakra-ui/react";
 import { Routes } from "./routes/routes";
-
+import { LessonStoreProvider } from "./context/lessonStore";
+import { PlaygroundStoreProvider } from "./context/playgroundStore";
 const root = ReactDOM.createRoot(document.querySelector("#root"));
 
 root.render(
-  <ChakraProvider>
-    <StoreProvider>
-      <Routes />
-    </StoreProvider>
-  </ChakraProvider>
+  <LessonStoreProvider>
+    <PlaygroundStoreProvider>
+      <ChakraProvider>
+        <Routes />
+      </ChakraProvider>
+    </PlaygroundStoreProvider>
+  </LessonStoreProvider>
 );

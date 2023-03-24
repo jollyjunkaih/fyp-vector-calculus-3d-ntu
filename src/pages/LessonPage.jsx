@@ -4,10 +4,10 @@ import { NavBar } from "../components/NavBar";
 import { SideNavBar } from "../components/SideNavBar";
 import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
-import { StoreContext } from "../context/store";
+import { LessonStoreContext } from "../context/lessonStore";
 export const LessonPage = () => {
   const { setScrollPosition, setHeaderPosition, setHeaderScrollPosition } =
-    useContext(StoreContext);
+    useContext(LessonStoreContext);
   useEffect(() => {
     const children = document.getElementById("lesson").children;
     const array1 = [];

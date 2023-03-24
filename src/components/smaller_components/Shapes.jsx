@@ -1,11 +1,11 @@
 import React, { useContext, useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 import { RigidBody, CylinderCollider, euler } from "@react-three/rapier";
-import { StoreContext } from "../../context/store";
+import { PlaygroundStoreContext } from "../../context/playgroundStore";
 import { Html } from "@react-three/drei";
 import nerdamer from "nerdamer/all.min";
 export const Shape = () => {
-  const { shape } = useContext(StoreContext);
+  const { shape } = useContext(PlaygroundStoreContext);
   const { shapeType } = shape;
 
   if (shapeType === "Circle") {
@@ -14,7 +14,7 @@ export const Shape = () => {
 };
 
 const Circle = ({}) => {
-  const { shape, vectorFormula } = useContext(StoreContext);
+  const { shape, vectorFormula } = useContext(PlaygroundStoreContext);
   const colliderRef = useRef();
   const bodyRef = useRef();
   const shapeRef = useRef();

@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import nerdamer from "nerdamer/all.min";
 import React, { useContext, useState } from "react";
-import { StoreContext } from "../context/store";
+import { PlaygroundStoreContext } from "../context/playgroundStore";
 import {
   FormulaInput,
   PlaneButton,
@@ -37,7 +37,7 @@ const SideMenu = () => {
     setShape,
     planeOnly,
     setPlaneOnly,
-  } = useContext(StoreContext);
+  } = useContext(PlaygroundStoreContext);
   const [error, setError] = useState(false);
 
   const useFormula = (x, y, z, vectorFormula) => {

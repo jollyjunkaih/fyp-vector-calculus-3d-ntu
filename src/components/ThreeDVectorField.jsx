@@ -11,14 +11,15 @@ import {
   Physics,
   CylinderCollider,
 } from "@react-three/rapier";
-import { StoreContext } from "../context/store";
+import { PlaygroundStoreContext } from "../context/playgroundStore";
 extend({ OrbitControls });
 
 export default function ThreeDVectorField() {
   const { camera, gl } = useThree();
   const axesColor = "red";
-  const { vectorData, vectorFormula, gridSize, planeSelected } =
-    useContext(StoreContext);
+  const { vectorData, vectorFormula, gridSize, planeSelected } = useContext(
+    PlaygroundStoreContext
+  );
   return (
     <>
       <orbitControls args={[camera, gl.domElement]} />

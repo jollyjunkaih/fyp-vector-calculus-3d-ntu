@@ -7,13 +7,13 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
-import { StoreContext } from "../context/store";
+import { LessonStoreContext } from "../context/lessonStore";
 import { getClosestNumber } from "../utils/helperFunctions";
 
 export const SideNavBar = ({}) => {
   const [value, setValue] = useState("1");
   const { scrollPosition, headerPosition, headerScrollPosition } =
-    useContext(StoreContext);
+    useContext(LessonStoreContext);
   useEffect(() => {
     if (headerPosition.length && headerScrollPosition.length) {
       const closestScroll = getClosestNumber(

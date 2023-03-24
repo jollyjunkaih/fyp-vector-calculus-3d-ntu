@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { StoreContext } from "../../context/store";
+import { PlaygroundStoreContext } from "../../context/playgroundStore";
 import {
   Container,
   Button,
@@ -22,7 +22,9 @@ import { buttonColor, selectedButtonColor } from "../../styles/Colours";
 import { InlineMath } from "react-katex";
 
 export const FormulaInput = ({ vector }) => {
-  const { vectorFormula, setVectorFormula } = useContext(StoreContext);
+  const { vectorFormula, setVectorFormula } = useContext(
+    PlaygroundStoreContext
+  );
   return (
     <Container marginTop={2}>
       <Text>Type the formula for {vector}</Text>
@@ -42,7 +44,9 @@ export const FormulaInput = ({ vector }) => {
 };
 
 export const PlaneButton = ({ plane }) => {
-  const { planeSelected, setPlaneSelected } = useContext(StoreContext);
+  const { planeSelected, setPlaneSelected } = useContext(
+    PlaygroundStoreContext
+  );
 
   return (
     <Button
@@ -61,7 +65,7 @@ export const PlaneButton = ({ plane }) => {
 };
 
 export const ShapeButton = ({ shapeText }) => {
-  const { shape, setShape } = useContext(StoreContext);
+  const { shape, setShape } = useContext(PlaygroundStoreContext);
 
   return (
     <Button
@@ -75,7 +79,7 @@ export const ShapeButton = ({ shapeText }) => {
   );
 };
 export const CircleCenterInput = ({ vector }) => {
-  const { shape, setShape } = useContext(StoreContext);
+  const { shape, setShape } = useContext(PlaygroundStoreContext);
   return (
     <InputGroup width={"20%"}>
       <Input
@@ -118,7 +122,7 @@ export const CircleCenterInput = ({ vector }) => {
 export const RotationSlider = ({ text }) => {
   const [sliderValue, setSliderValue] = useState(0);
   const [showTooltip, setShowTooltip] = React.useState(false);
-  const { shape, setShape } = useContext(StoreContext);
+  const { shape, setShape } = useContext(PlaygroundStoreContext);
 
   return (
     <HStack width={"100%"} height={8}>
@@ -197,7 +201,7 @@ export const RotationSlider = ({ text }) => {
 };
 
 export const FormulaDisplay = () => {
-  const { vectorFormula } = useContext(StoreContext);
+  const { vectorFormula } = useContext(PlaygroundStoreContext);
   try {
     if (
       nerdamer.convertToLaTeX(vectorFormula.i) &&
