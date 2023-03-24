@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { VStack, HStack, Text, Box } from "@chakra-ui/react";
 import { NavBar } from "../components/NavBar";
 import { SideNavBar } from "../components/SideNavBar";
 import "katex/dist/katex.min.css";
 import { InlineMath, BlockMath } from "react-katex";
+import { StoreContext } from "../context/store";
 export const LessonPage = () => {
+  const { setScrollPosition, setHeaderPosition, setHeaderScrollPosition } =
+    useContext(StoreContext);
+  useEffect(() => {
+    const children = document.getElementById("lesson").children;
+    const array1 = [];
+    const array2 = [];
+    for (const child of children) {
+      if (child.id) {
+        array1.push(child.id);
+        array2.push(parseInt(child.offsetTop));
+      }
+    }
+    setHeaderPosition(array1);
+    setHeaderScrollPosition(array2);
+  }, []);
   return (
-    <VStack height={"100%"} width='100%' overflow={"hidden"}>
+    <VStack height={"100%"} width='100%'>
       <NavBar />
       <HStack height={"100%"} width='100%'>
         <SideNavBar />
@@ -15,6 +31,8 @@ export const LessonPage = () => {
           height={"100%"}
           width='80%'
           overflow={"scroll"}
+          id={"lesson"}
+          onScroll={(e) => setScrollPosition(parseInt(e.target.scrollTop))}
         >
           <Heading>Vectors and Calculus</Heading>
           <Body>
@@ -239,6 +257,7 @@ const Heading = ({ children }) => {
       paddingBottom={5}
       fontSize={"2xl"}
       as={"b"}
+      id={children}
     >
       {children}
     </Text>

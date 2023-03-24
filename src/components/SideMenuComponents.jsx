@@ -82,7 +82,6 @@ export const CircleCenterInput = ({ vector }) => {
         type='number'
         defaultValue={0}
         onChange={(event) => {
-          console.log(event.target.value);
           if (event.target.value != "" && event.target.value !== "-") {
             if (vector === "i") {
               setShape({

@@ -9,6 +9,10 @@ export const StoreProvider = ({ children }) => {
   const [vectorData, setVectorData] = useState([]);
   const [shape, setShape] = useState({ shapeType: "", formula: "" });
   const [planeOnly, setPlaneOnly] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState();
+  const [headerPosition, setHeaderPosition] = useState([]);
+  const [headerScrollPosition, setHeaderScrollPosition] = useState([]);
+
   return (
     <StoreContext.Provider
       value={{
@@ -24,6 +28,12 @@ export const StoreProvider = ({ children }) => {
         setShape,
         planeOnly,
         setPlaneOnly,
+        scrollPosition,
+        setScrollPosition,
+        headerPosition,
+        setHeaderPosition,
+        headerScrollPosition,
+        setHeaderScrollPosition,
       }}
     >
       {children}

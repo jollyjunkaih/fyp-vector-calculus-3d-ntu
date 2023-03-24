@@ -6,16 +6,16 @@ import {
   Text,
   Container,
   Icon,
+  Button,
 } from "@chakra-ui/react";
 import React from "react";
 import { usePath } from "hookrouter";
 import { navBarColor } from "../styles/Colours";
 import {
   AiOutlineTwitter,
-  AiOutlineInstagram,
   AiOutlineGithub,
+  AiOutlineLinkedin,
 } from "react-icons/ai";
-import { TfiGithub } from "react-icons/tfi";
 
 export const NavBar = () => {
   const path = usePath();
@@ -50,9 +50,33 @@ export const NavBar = () => {
         </Breadcrumb>
       </HStack>
       <HStack width={"33%"} justifyContent={"end"}>
-        <Icon boxSize={7} color={"white"} as={AiOutlineInstagram} />
-        <Icon boxSize={7} color={"white"} as={AiOutlineTwitter} />
-        <Icon boxSize={7} color={"white"} as={AiOutlineGithub} />
+        <Button
+          onClick={() =>
+            window.open("https://twitter.com/jollyjunkaih", "_blank")
+          }
+          variant={"link"}
+        >
+          <Icon boxSize={7} color={"white"} as={AiOutlineTwitter} />
+        </Button>
+        <Button
+          onClick={() =>
+            window.open(
+              "https://github.com/jollyjunkaih/vector_calculus_visual_learning_aid",
+              "_blank"
+            )
+          }
+          variant={"link"}
+        >
+          <Icon boxSize={7} color={"white"} as={AiOutlineGithub} />
+        </Button>
+        <Button
+          onClick={() =>
+            window.open("https://www.linkedin.com/in/jun-kaih/", "_blank")
+          }
+          variant={"link"}
+        >
+          <Icon boxSize={7} color={"white"} as={AiOutlineLinkedin} />
+        </Button>
       </HStack>
     </HStack>
   );

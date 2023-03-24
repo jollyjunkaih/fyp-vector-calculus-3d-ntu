@@ -89,3 +89,9 @@ export function getEulerRotation(i, j, k) {
   euler.setFromQuaternion(quat, "XYZ");
   return euler;
 }
+
+export function getClosestNumber(array, number) {
+  return array.reduce(function (prev, curr) {
+    return Math.abs(curr - number) < Math.abs(prev - number) ? curr : prev;
+  });
+}
