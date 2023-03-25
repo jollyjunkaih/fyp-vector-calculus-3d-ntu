@@ -200,29 +200,21 @@ export const RotationSlider = ({ text }) => {
 export const FormulaDisplay = ({ vectorFormula }) => {
   try {
     return (
-      <InlineMath>{`f(x,y,z) = ${nerdamer.convertToLaTeX(
+      <InlineMath>{`f(x,y,z) = (${nerdamer.convertToLaTeX(
         vectorFormula.i
-      )} i + ${nerdamer.convertToLaTeX(
+      )}) i + (${nerdamer.convertToLaTeX(
         vectorFormula.j
-      )} j + ${nerdamer.convertToLaTeX(vectorFormula.k)} k`}</InlineMath>
+      )}) j + (${nerdamer.convertToLaTeX(vectorFormula.k)}) k`}</InlineMath>
     );
   } catch (e) {
     {
       try {
         return (
-          <>
-            <Text>{`f(x,y) = ${nerdamer.convertToLaTeX(
-              vectorFormula.i
-            )} i + ${nerdamer.convertToLaTeX(
-              vectorFormula.j
-            )} j + ${nerdamer.convertToLaTeX(vectorFormula.k)} k`}</Text>
-            <br />
-            <Text>{`f(x,y) = ${nerdamer.convertToLaTeX(
-              vectorFormula.i
-            )} i + ${nerdamer.convertToLaTeX(
-              vectorFormula.j
-            )} j + ${nerdamer.convertToLaTeX(vectorFormula.k)} k`}</Text>
-          </>
+          <Text>{`f(x,y) = ${nerdamer.convertToLaTeX(
+            vectorFormula.i
+          )} i + ${nerdamer.convertToLaTeX(
+            vectorFormula.j
+          )} j + ${nerdamer.convertToLaTeX(vectorFormula.k)} k`}</Text>
         );
       } catch (e) {
         return (

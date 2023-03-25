@@ -183,8 +183,6 @@ export const VectorFieldVisual = () => {
 
       {vectorFieldData.map((data) => {
         const { x, y, z, i, j, k } = data;
-        console.log(x, y, z);
-
         return (
           <mesh position={[x, y, z]} key={JSON.stringify(data)}>
             <ArrowMesh
