@@ -9,7 +9,9 @@ import {
   getCurl,
   getEulerRotation,
 } from "../../utils/helperFunctions";
-export default function Arrow({ i, j, k, x, y, z }) {
+export default function Arrow({ data }) {
+  const { x, y, z, i, j, k } = data;
+
   const [collision, setCollision] = useState(false);
 
   const { _x, _y, _z } = getEulerRotation(i, j, k);

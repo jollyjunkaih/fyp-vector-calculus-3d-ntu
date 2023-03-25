@@ -21,10 +21,7 @@ import katex from "katex";
 import { buttonColor, selectedButtonColor } from "../../styles/Colours";
 import { InlineMath } from "react-katex";
 
-export const FormulaInput = ({ vector }) => {
-  const { vectorFormula, setVectorFormula } = useContext(
-    PlaygroundStoreContext
-  );
+export const FormulaInput = ({ vector, vectorFormula, setVectorFormula }) => {
   return (
     <Container marginTop={2}>
       <Text>Type the formula for {vector}</Text>

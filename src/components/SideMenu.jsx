@@ -28,6 +28,7 @@ import { buttonColor, selectedButtonColor } from "../styles/Colours";
 const SideMenu = () => {
   const {
     vectorFormula,
+    setVectorFormula,
     setVectorData,
     gridSize,
     setGridSize,
@@ -152,9 +153,21 @@ const SideMenu = () => {
               something else
             </Text>
           ) : null}
-          <FormulaInput vector={"i"} />
-          <FormulaInput vector={"j"} />
-          <FormulaInput vector={"k"} />
+          <FormulaInput
+            vector={"i"}
+            vectorFormula={vectorFormula}
+            setVectorFormula={setVectorFormula}
+          />
+          <FormulaInput
+            vector={"j"}
+            vectorFormula={vectorFormula}
+            setVectorFormula={setVectorFormula}
+          />
+          <FormulaInput
+            vector={"k"}
+            vectorFormula={vectorFormula}
+            setVectorFormula={setVectorFormula}
+          />
           <Button
             marginTop={2}
             alignSelf={"center"}

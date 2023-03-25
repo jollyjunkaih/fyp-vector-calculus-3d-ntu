@@ -18,12 +18,6 @@ import {
 } from "react-icons/ai";
 
 export const NavBar = () => {
-  const router = useRouter();
-  const route = useRoute("/playground");
-  console.log(router);
-
-  console.log(route);
-  const path = "/";
   return (
     <HStack padding={4} width={"100%"} bgColor={navBarColor}>
       <Container width={"33%"}></Container>
