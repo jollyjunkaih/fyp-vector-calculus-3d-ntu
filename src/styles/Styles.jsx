@@ -81,3 +81,7 @@ export const LatexFormula = ({ children }) => {
     </Box>
   );
 };
+
+export const Code = ({ children }) => {
+  return <Text as='kbd'>{children}</Text>;
+};

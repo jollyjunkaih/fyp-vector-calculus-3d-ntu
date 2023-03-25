@@ -197,22 +197,15 @@ export const RotationSlider = ({ text }) => {
   );
 };
 
-export const FormulaDisplay = () => {
-  const { vectorFormula } = useContext(PlaygroundStoreContext);
+export const FormulaDisplay = ({ vectorFormula }) => {
   try {
-    if (
-      nerdamer.convertToLaTeX(vectorFormula.i) &&
-      nerdamer.convertToLaTeX(vectorFormula.j) &&
-      nerdamer.convertToLaTeX(vectorFormula.k)
-    ) {
-      return (
-        <InlineMath>{`f(x,y,z) = ${nerdamer.convertToLaTeX(
-          vectorFormula.i
-        )} i + ${nerdamer.convertToLaTeX(
-          vectorFormula.j
-        )} j + ${nerdamer.convertToLaTeX(vectorFormula.k)} k`}</InlineMath>
-      );
-    }
+    return (
+      <InlineMath>{`f(x,y,z) = ${nerdamer.convertToLaTeX(
+        vectorFormula.i
+      )} i + ${nerdamer.convertToLaTeX(
+        vectorFormula.j
+      )} j + ${nerdamer.convertToLaTeX(vectorFormula.k)} k`}</InlineMath>
+    );
   } catch (e) {
     {
       try {

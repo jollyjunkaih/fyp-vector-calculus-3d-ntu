@@ -25,6 +25,7 @@ import {
 } from "./smaller_components/SideMenuComponents";
 import { Card } from "../styles/Styles";
 import { buttonColor, selectedButtonColor } from "../styles/Colours";
+import { useFormula } from "../utils/helperFunctions";
 const SideMenu = () => {
   const {
     vectorFormula,
@@ -41,15 +42,10 @@ const SideMenu = () => {
   } = useContext(PlaygroundStoreContext);
   const [error, setError] = useState(false);
 
-  const useFormula = (x, y, z, vectorFormula) => {
-    if (vectorFormula) {
-      return nerdamer(vectorFormula, { x: x, y: y, z: z }).toString();
-    }
-  };
   const onUpdate = () => {
     try {
       if (vectorFormula.i && vectorFormula.j && vectorFormula.k) {
-        let newValueList = [];
+        const newValueList = [];
         for (let x = -gridSize / 2; x < gridSize / 2 + 1; x++) {
           for (let y = -gridSize / 2; y < gridSize / 2 + 1; y++) {
             for (let z = -gridSize / 2; z < gridSize / 2 + 1; z++) {
@@ -131,20 +127,18 @@ const SideMenu = () => {
           </HStack>
         </Card>
         <Card>
-          {vectorFormula.i && vectorFormula.j && vectorFormula.k ? (
-            <Flex
-              borderRadius={5}
-              borderWidth={2}
-              borderColor={selectedButtonColor}
-              padding={4}
-              alignSelf={"center"}
-              height={"fit-content"}
-              width={"90%"}
-              justifyContent={"center"}
-            >
-              <FormulaDisplay />
-            </Flex>
-          ) : null}
+          <Flex
+            borderRadius={5}
+            borderWidth={2}
+            borderColor={selectedButtonColor}
+            padding={4}
+            alignSelf={"center"}
+            height={"fit-content"}
+            width={"90%"}
+            justifyContent={"center"}
+          >
+            <FormulaDisplay vectorFormula={vectorFormula} />
+          </Flex>
 
           {error ? (
             <Text fontSize={"xs"} color='red'>
@@ -175,7 +169,7 @@ const SideMenu = () => {
             onClick={onUpdate}
             bgColor={buttonColor}
           >
-            <Text>Update</Text>
+            <Text>Generate</Text>
           </Button>
         </Card>
         <Card>

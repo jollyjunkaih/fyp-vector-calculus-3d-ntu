@@ -13,7 +13,7 @@ export default function Arrow({ data }) {
   const { x, y, z, i, j, k } = data;
 
   const [collision, setCollision] = useState(false);
-
+  const { planeOnly, vectorFormula } = useContext(PlaygroundStoreContext);
   const { _x, _y, _z } = getEulerRotation(i, j, k);
 
   return (
@@ -28,15 +28,45 @@ export default function Arrow({ data }) {
       onIntersectionExit={() => setCollision(false)}
     >
       <CuboidCollider args={[0.8, 0.1, 0.1]} />
-      <ArrowMesh collision={collision} x={x} y={y} z={z} i={i} j={j} k={k} />
+      <ArrowMesh
+        planeOnly={planeOnly}
+        vectorFormula={vectorFormula}
+        collision={collision}
+        x={x}
+        y={y}
+        z={z}
+        i={i}
+        j={j}
+        k={k}
+        playground={true}
+      />
     </RigidBody>
   );
 }
 
-const ArrowMesh = ({ collision, x, y, z, i, j, k }) => {
+export const ArrowMesh = ({
+  collision,
+  x,
+  y,
+  z,
+  i,
+  j,
+  k,
+  planeOnly,
+  vectorFormula,
+  playground,
+}) => {
   const color = "black";
   const [hover, setHover] = useState(false);
-  const { planeOnly, vectorFormula } = useContext(PlaygroundStoreContext);
+  let _x;
+  let _y;
+  let _z;
+  if (!playground) {
+    const results = getEulerRotation(i, j, k);
+    _x = results.x;
+    _y = results.y;
+    _z = results.z;
+  }
   if (planeOnly) {
     if (collision)
       return (
@@ -94,6 +124,7 @@ const ArrowMesh = ({ collision, x, y, z, i, j, k }) => {
   } else {
     return (
       <group
+        rotation={_x ? [_x, _y, _z] : undefined}
         onPointerOver={() => {
           setHover(true);
         }}

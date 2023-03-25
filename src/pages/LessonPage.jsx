@@ -1,18 +1,36 @@
 import React, { useContext, useEffect } from "react";
-import { VStack, HStack, Text, Box, Input, Button } from "@chakra-ui/react";
+import {
+  VStack,
+  HStack,
+  Text,
+  Box,
+  Input,
+  Button,
+  Divider,
+} from "@chakra-ui/react";
 import { NavBar } from "../components/NavBar";
 import { SideNavBar } from "../components/SideNavBar";
 import "katex/dist/katex.min.css";
 import { InlineMath } from "react-katex";
 import { LessonStoreContext } from "../context/lessonStore";
-import { Heading, SubHeading1, Body, LatexFormula } from "../styles/Styles";
+import {
+  Heading,
+  SubHeading1,
+  Body,
+  LatexFormula,
+  Code,
+} from "../styles/Styles";
 import {
   ScalarFieldVisual,
   ScalarFieldFormulaDisplay,
+  VectorFieldFormulaDisplay,
+  VectorFieldVisual,
 } from "../components/LessonComponents";
 import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
 import nerdamer from "nerdamer/all.min";
+import { navBarColor } from "../styles/Colours";
+import { FormulaDisplay } from "../components/smaller_components/SideMenuComponents";
 
 export const LessonPage = () => {
   const { setScrollPosition, setHeaderPosition, setHeaderScrollPosition } =
@@ -180,13 +198,7 @@ const VectorsAndCalculus = () => {
 };
 
 const ScalarField = () => {
-  const {
-    setScalarFormula,
-    scalarFormula,
-    scalarValues,
-    setScalarValues,
-    gridSize,
-  } = useContext(LessonStoreContext);
+  const { setScalarFormula, scalarFormula } = useContext(LessonStoreContext);
   return (
     <>
       <Heading>Scalar Fields</Heading>
@@ -210,10 +222,18 @@ const ScalarField = () => {
         your formula, the height of the contour <InlineMath>y</InlineMath> will
         change at each <InlineMath>x</InlineMath> and <InlineMath>z</InlineMath>{" "}
         position. Adjust the weights on each variable to get a smooth looking
-        contour.
+        contour. You can start with this :{" "}
+        <Code>5-(0.3*x^2-0.7*x+0.04*z^3)</Code>
       </Body>
-      <HStack alignSelf={"center"} width={"90%"} minHeight={600}>
-        <Box width={"70%"} height={"100%"}>
+      <HStack
+        alignSelf={"center"}
+        width={"85%"}
+        minHeight={600}
+        borderWidth={2}
+        borderRadius={10}
+        borderColor={navBarColor}
+      >
+        <Box width={"65%"} height={"100%"}>
           <Canvas
             gl={{
               antialias: true,
@@ -230,10 +250,11 @@ const ScalarField = () => {
             <ScalarFieldVisual />
           </Canvas>
         </Box>
+        <Divider paddingRight={5} height={"90%"} orientation='vertical' />
         <VStack width={"30%"} alignItems={"start"}>
           <Text a>Type the formula for y</Text>
           <Input
-            width={"60%"}
+            width={"90%"}
             onChange={(val) => {
               setScalarFormula(val.target.value);
             }}
@@ -246,6 +267,8 @@ const ScalarField = () => {
   );
 };
 const VectorField = () => {
+  const { setVectorFieldFormula, vectorFieldFormula } =
+    useContext(LessonStoreContext);
   return (
     <>
       <Heading>Vector Fields</Heading>
@@ -268,6 +291,74 @@ const VectorField = () => {
         direction and magnitude of the vector at that point.
       </Body>
       <SubHeading1>Visualising a Vector Field</SubHeading1>
+      <Body>
+        Feel free to play with the vector field visualiser. Based on your
+        formula for the vector at each coordinate <InlineMath>x, y </InlineMath>{" "}
+        and <InlineMath>z</InlineMath>. Hover over the vectors to see
+        information at each point. Try putting this
+        <Code>(i) z^2*x || (j) x*4+y^3 || (k) y*x*z </Code>
+      </Body>
+      <HStack
+        alignSelf={"center"}
+        width={"85%"}
+        minHeight={600}
+        borderWidth={2}
+        borderRadius={10}
+        borderColor={navBarColor}
+      >
+        <Box width={"65%"} height={"100%"}>
+          <Canvas
+            gl={{
+              antialias: true,
+              toneMapping: THREE.ACESFilmicToneMapping,
+              outputEncoding: THREE.sRGBEncoding,
+            }}
+            camera={{
+              fov: 45,
+              near: 0.1,
+              far: 200,
+              position: [9, 5, 12],
+            }}
+          >
+            <VectorFieldVisual />
+          </Canvas>
+        </Box>
+        <Divider paddingRight={5} height={"90%"} orientation='vertical' />
+        <VStack width={"30%"} alignItems={"start"}>
+          <Text a>Type the formula for i</Text>
+          <Input
+            width={"90%"}
+            onChange={(val) => {
+              setVectorFieldFormula({
+                ...vectorFieldFormula,
+                i: val.target.value,
+              });
+            }}
+          />
+          <Text a>Type the formula for j</Text>
+          <Input
+            width={"90%"}
+            onChange={(val) => {
+              setVectorFieldFormula({
+                ...vectorFieldFormula,
+                j: val.target.value,
+              });
+            }}
+          />
+          <Text a>Type the formula for k</Text>
+          <Input
+            width={"90%"}
+            onChange={(val) => {
+              setVectorFieldFormula({
+                ...vectorFieldFormula,
+                k: val.target.value,
+              });
+            }}
+          />
+          <br />
+          <VectorFieldFormulaDisplay />
+        </VStack>
+      </HStack>
     </>
   );
 };

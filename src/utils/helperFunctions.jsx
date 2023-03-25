@@ -95,3 +95,9 @@ export function getClosestNumber(array, number) {
     return Math.abs(curr - number) < Math.abs(prev - number) ? curr : prev;
   });
 }
+
+export function useFormula(x, y, z, vectorFormula) {
+  if (vectorFormula) {
+    return nerdamer(vectorFormula, { x: x, y: y, z: z }).toString();
+  }
+}

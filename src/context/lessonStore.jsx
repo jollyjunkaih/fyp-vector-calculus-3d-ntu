@@ -8,7 +8,13 @@ export const LessonStoreProvider = ({ children }) => {
   const [headerScrollPosition, setHeaderScrollPosition] = useState([]);
   const [scalarFormula, setScalarFormula] = useState("");
   const [scalarValues, setScalarValues] = useState([]);
-  const gridSize = 8;
+  const [vectorFieldFormula, setVectorFieldFormula] = useState({
+    i: "",
+    j: "",
+    k: "",
+  });
+  const [vectorFieldData, setVectorFieldData] = useState([]);
+  const gridSize = 6;
 
   return (
     <LessonStoreContext.Provider
@@ -24,6 +30,10 @@ export const LessonStoreProvider = ({ children }) => {
         scalarValues,
         setScalarValues,
         gridSize,
+        vectorFieldFormula,
+        setVectorFieldFormula,
+        vectorFieldData,
+        setVectorFieldData,
       }}
     >
       {children}
