@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { PlaygroundStoreContext } from "../../context/playgroundStore";
 import {
-  Container,
+  Box,
   Button,
   Text,
   Input,
@@ -14,16 +14,32 @@ import {
   SliderMark,
   Tooltip,
   HStack,
+  VStack,
+  Divider,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Container,
 } from "@chakra-ui/react";
 import { Vector } from "../../styles/Styles.jsx";
 import nerdamer from "nerdamer/all.min";
-import katex from "katex";
-import { buttonColor, selectedButtonColor } from "../../styles/Colours";
+import {
+  getCircleEquation,
+  getFluxThroughCircularSurface,
+} from "../../utils/helperFunctions";
+import * as THREE from "three";
+import {
+  buttonColor,
+  navBarColor,
+  selectedButtonColor,
+} from "../../styles/Colours";
 import { InlineMath } from "react-katex";
 
 export const FormulaInput = ({ vector, vectorFormula, setVectorFormula }) => {
   return (
-    <Container marginTop={2}>
+    <Box marginTop={2} width={"100%"}>
       <Text>Type the formula for {vector}</Text>
       <Input
         onChange={(val) => {
@@ -36,7 +52,7 @@ export const FormulaInput = ({ vector, vectorFormula, setVectorFormula }) => {
           }
         }}
       />
-    </Container>
+    </Box>
   );
 };
 
@@ -87,24 +103,24 @@ export const CircleCenterInput = ({ vector }) => {
             if (vector === "i") {
               setShape({
                 ...shape,
-                formula: {
-                  ...shape.formula,
+                circleFormula: {
+                  ...shape.circleFormula,
                   center_x: parseInt(event.target.value),
                 },
               });
             } else if (vector === "j")
               setShape({
                 ...shape,
-                formula: {
-                  ...shape.formula,
+                circleFormula: {
+                  ...shape.circleFormula,
                   center_y: parseInt(event.target.value),
                 },
               });
             else if (vector === "k")
               setShape({
                 ...shape,
-                formula: {
-                  ...shape.formula,
+                circleFormula: {
+                  ...shape.circleFormula,
                   center_z: parseInt(event.target.value),
                 },
               });
@@ -138,17 +154,26 @@ export const RotationSlider = ({ text }) => {
           if (text === "x-axis")
             setShape({
               ...shape,
-              formula: { ...shape.formula, rotation_x: parseInt(val) },
+              circleFormula: {
+                ...shape.circleFormula,
+                rotation_x: parseInt(val),
+              },
             });
           else if (text === "y-axis")
             setShape({
               ...shape,
-              formula: { ...shape.formula, rotation_y: parseInt(val) },
+              circleFormula: {
+                ...shape.circleFormula,
+                rotation_y: parseInt(val),
+              },
             });
           else if (text === "z-axis")
             setShape({
               ...shape,
-              formula: { ...shape.formula, rotation_z: parseInt(val) },
+              circleFormula: {
+                ...shape.circleFormula,
+                rotation_z: parseInt(val),
+              },
             });
         }}
       >
@@ -208,21 +233,142 @@ export const FormulaDisplay = ({ vectorFormula }) => {
     );
   } catch (e) {
     {
-      try {
-        return (
-          <Text>{`f(x,y) = ${nerdamer.convertToLaTeX(
-            vectorFormula.i
-          )} i + ${nerdamer.convertToLaTeX(
-            vectorFormula.j
-          )} j + ${nerdamer.convertToLaTeX(vectorFormula.k)} k`}</Text>
-        );
-      } catch (e) {
-        return (
-          <Text color='red'>
-            There is something wrong with your formula. <br /> Please try again
-          </Text>
-        );
-      }
+      return <></>;
     }
   }
+};
+
+export const ShapeSelection = () => {
+  const { shape, setShape, planeOnly, setPlaneOnly } = useContext(
+    PlaygroundStoreContext
+  );
+
+  if (shape.shapeType === "Circle") return <CircleOptions />;
+};
+
+const CircleOptions = () => {
+  const { shape, setShape, planeOnly, setPlaneOnly, vectorFormula } =
+    useContext(PlaygroundStoreContext);
+  const [planeVector1, setPlaneVector1] = useState(new THREE.Vector3(0, 0, 1));
+  const [planeVector2, setPlaneVector2] = useState(new THREE.Vector3(1, 0, 0));
+  const [normalVector, setNormalVector] = useState(new THREE.Vector3(0, 1, 0));
+  const [circleFormula, setCircleFormula] = useState({});
+  const { circleFormula: formula } = shape;
+  const {
+    radius = 1,
+    center_x = 0,
+    center_y = 0,
+    center_z = 0,
+    rotation_x = 0,
+    rotation_y = 0,
+    rotation_z = 0,
+  } = formula;
+  useEffect(() => {
+    const eulerAngles = new THREE.Euler(
+      (rotation_x / 180) * Math.PI,
+      (rotation_y / 180) * Math.PI,
+      (rotation_z / 180) * Math.PI
+    );
+
+    const v1 = new THREE.Vector3(0, 0, 1);
+    const v2 = new THREE.Vector3(1, 0, 0);
+    const v3 = new THREE.Vector3(0, 1, 0);
+    v1.applyEuler(eulerAngles);
+    v2.applyEuler(eulerAngles);
+    v3.applyEuler(eulerAngles);
+    setPlaneVector1(v1);
+    setPlaneVector2(v2);
+    setNormalVector(v3);
+  }, [rotation_x, rotation_y, rotation_z]);
+  useEffect(() => {
+    setCircleFormula({
+      x: getCircleEquation(planeVector1.x, planeVector2.x, center_x),
+      y: getCircleEquation(planeVector1.y, planeVector2.y, center_y),
+      z: getCircleEquation(planeVector1.z, planeVector2.z, center_z),
+    });
+  }, [planeVector1, planeVector2, center_x, center_y, center_z]);
+  return (
+    <VStack alignItems={"start"} minHeight={"fit-content"}>
+      <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
+        <Text mb='8px'>Radius</Text>
+
+        <NumberInput
+          size={"sm"}
+          defaultValue={1}
+          onChange={(val) =>
+            setShape({
+              ...shape,
+              circleFormula: {
+                ...shape.circleFormula,
+                radius: parseInt(val),
+              },
+            })
+          }
+          width={"30%"}
+          min={1}
+          max={5}
+        >
+          <NumberInputField />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+      </HStack>
+      <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
+        <Text mb='8px'>Center</Text>
+
+        <CircleCenterInput vector='i' />
+        <CircleCenterInput vector='j' />
+        <CircleCenterInput vector='k' />
+      </HStack>
+      <Text>Rotation</Text>
+      <RotationSlider text={"x-axis"} />
+      <RotationSlider text={"y-axis"} />
+      <RotationSlider text={"z-axis"} />
+      <VStack alignSelf={"center"}>
+        <Button
+          bgColor={planeOnly ? selectedButtonColor : buttonColor}
+          onClick={() => {
+            setPlaneOnly(!planeOnly);
+          }}
+          marginTop={3}
+          alignSelf={"center"}
+        >
+          Only show vectors on the plane
+        </Button>
+      </VStack>
+      <Container height={5}>
+        <Divider padding={1} borderColor={navBarColor} />
+      </Container>
+
+      <Text fontSize={"lg"} as='b'>
+        Equation of Circle:
+      </Text>
+
+      <InlineMath>{`x(θ,r) = ${circleFormula.x}`}</InlineMath>
+      <InlineMath>{`y(θ,r) = ${circleFormula.y}`}</InlineMath>
+      <InlineMath>{`z(θ,r) = ${circleFormula.z}`}</InlineMath>
+      <Text fontSize={"lg"} as='b'>
+        Properties:
+      </Text>
+      <Text>
+        Normal:{" "}
+        <InlineMath>{`\\widehat{n}= ${normalVector.x.toFixed(
+          2
+        )}i + ${normalVector.y.toFixed(2)}j + ${normalVector.z.toFixed(
+          2
+        )}k`}</InlineMath>
+      </Text>
+      <Text>
+        Flux:{" "}
+        <InlineMath>{`\\iint_S f \\cdot\\widehat{n}\\cdot dA = ${getFluxThroughCircularSurface(
+          vectorFormula,
+          normalVector,
+          radius,
+          circleFormula
+        )}`}</InlineMath>
+      </Text>
+    </VStack>
+  );
 };

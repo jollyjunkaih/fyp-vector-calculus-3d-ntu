@@ -7,7 +7,13 @@ export const PlaygroundStoreProvider = ({ children }) => {
   const [gridSize, setGridSize] = useState(10);
   const [planeSelected, setPlaneSelected] = useState({ plane: "", value: 0 });
   const [vectorData, setVectorData] = useState([]);
-  const [shape, setShape] = useState({ shapeType: "", formula: "" });
+  const [shape, setShape] = useState({
+    shapeType: "",
+    circleFormula: {},
+    squareFormula: {},
+    sphereFormula: {},
+    cubeFormula: {},
+  });
   const [planeOnly, setPlaneOnly] = useState(false);
 
   return (

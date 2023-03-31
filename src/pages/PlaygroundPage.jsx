@@ -10,7 +10,7 @@ export const PlaygroundPage = () => {
     <VStack height={"100%"}>
       <NavBar />
       <HStack width={"100%"} height={"100%"}>
-        <Flex width={"70%"} height={"100%"}>
+        <Flex width={"65%"} height={"100%"}>
           <Canvas
             gl={{
               antialias: true,
@@ -27,7 +27,7 @@ export const PlaygroundPage = () => {
             <ThreeDVectorField />
           </Canvas>
         </Flex>
-        <Flex width={"30%"} height={"100%"} padding={0}>
+        <Flex width={"35%"} height={"100%"} padding={0}>
           <SideMenu />
         </Flex>
       </HStack>

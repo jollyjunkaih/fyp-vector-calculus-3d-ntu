@@ -9,6 +9,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { LessonStoreContext } from "../context/lessonStore";
 import { getClosestNumber } from "../utils/helperFunctions";
+import { navBarColor } from "../styles/Colours";
 
 export const SideNavBar = ({}) => {
   const [value, setValue] = useState("1");
@@ -90,7 +91,12 @@ export const SideNavBar = ({}) => {
           <Radio value="Stoke's Theorem">Stoke's Theorem</Radio>
         </VStack>
       </RadioGroup>
-      <Divider orientation='vertical' padding={0} margin={0} />
+      <Divider
+        borderColor={navBarColor}
+        orientation='vertical'
+        padding={0}
+        margin={0}
+      />
     </HStack>
   );
 };

@@ -250,7 +250,12 @@ const ScalarField = () => {
             <ScalarFieldVisual />
           </Canvas>
         </Box>
-        <Divider paddingRight={5} height={"90%"} orientation='vertical' />
+        <Divider
+          paddingRight={5}
+          height={"90%"}
+          orientation='vertical'
+          borderColor={navBarColor}
+        />
         <VStack width={"30%"} alignItems={"start"}>
           <Text a>Type the formula for y</Text>
           <Input
@@ -323,7 +328,12 @@ const VectorField = () => {
             <VectorFieldVisual />
           </Canvas>
         </Box>
-        <Divider paddingRight={5} height={"90%"} orientation='vertical' />
+        <Divider
+          borderColor={navBarColor}
+          paddingRight={5}
+          height={"90%"}
+          orientation='vertical'
+        />
         <VStack width={"30%"} alignItems={"start"}>
           <Text a>Type the formula for i</Text>
           <Input
