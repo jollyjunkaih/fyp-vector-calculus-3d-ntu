@@ -66,6 +66,7 @@ export const ArrowMesh = ({
 }) => {
   const color = "black";
   const [hover, setHover] = useState(false);
+  const [magnitude, setMagnitude] = useState(0);
   let _x;
   let _y;
   let _z;
@@ -75,6 +76,12 @@ export const ArrowMesh = ({
     _y = results.y;
     _z = results.z;
   }
+  useEffect(() => {
+    let m = Math.sqrt(i * i + j * j + k * k) * -0.1 + 0.25;
+    if (m < -0.6) m = -0.6 - (-0.6 - m) / 100;
+    setMagnitude(m);
+  }, [i, j, k]);
+
   if (planeOnly) {
     if (collision)
       return (
@@ -110,6 +117,8 @@ export const ArrowMesh = ({
                   <br />
                   Curl: <span>&#8711;</span>x<Vector text='u' /> ={" "}
                   {getCurl(vectorFormula, x, y, z)}
+                  <br />
+                  Magnitude:{magnitude}
                 </p>
               </div>
             </Html>
@@ -117,7 +126,7 @@ export const ArrowMesh = ({
           <Line
             points={[
               [0.5, 0, 0],
-              [-0.6, 0, 0],
+              [magnitude, 0, 0],
             ]}
             color={collision ? "green" : color}
             lineWidth={5}
@@ -164,6 +173,8 @@ export const ArrowMesh = ({
                 <br />
                 Curl: <span>&#8711;</span>x<Vector text='u' /> ={" "}
                 {getCurl(vectorFormula, x, y, z)}
+                <br />
+                Magnitude:{magnitude}
               </p>
             </div>
           </Html>
@@ -171,7 +182,7 @@ export const ArrowMesh = ({
         <Line
           points={[
             [0.5, 0, 0],
-            [-0.6, 0, 0],
+            [magnitude, 0, 0],
           ]}
           color={collision ? "green" : color}
           lineWidth={5}
