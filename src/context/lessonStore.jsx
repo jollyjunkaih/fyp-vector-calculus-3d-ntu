@@ -13,6 +13,12 @@ export const LessonStoreProvider = ({ children }) => {
     j: "",
     k: "",
   });
+  const [divergenceData, setDivergenceData] = useState({
+    direction: "X",
+    rotation_x: 0,
+    rotation_z: 0,
+    normal: "",
+  });
   const [vectorFieldData, setVectorFieldData] = useState([]);
   const gridSize = 6;
 
@@ -34,6 +40,8 @@ export const LessonStoreProvider = ({ children }) => {
         setVectorFieldFormula,
         vectorFieldData,
         setVectorFieldData,
+        divergenceData,
+        setDivergenceData,
       }}
     >
       {children}

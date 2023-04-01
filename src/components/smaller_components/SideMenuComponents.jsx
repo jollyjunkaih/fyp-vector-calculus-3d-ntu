@@ -253,14 +253,6 @@ const RotationSlider = ({ text, value }) => {
                   rotation_x: parseInt(val),
                 },
               });
-            } else if (shape.shapeType === "Sphere") {
-              setShape({
-                ...shape,
-                sphereFormula: {
-                  ...shape.sphereFormula,
-                  rotation_x: parseInt(val),
-                },
-              });
             } else if (shape.shapeType === "Cube") {
               setShape({
                 ...shape,
@@ -287,14 +279,6 @@ const RotationSlider = ({ text, value }) => {
                   rotation_y: parseInt(val),
                 },
               });
-            } else if (shape.shapeType === "Sphere") {
-              setShape({
-                ...shape,
-                sphereFormula: {
-                  ...shape.sphereFormula,
-                  rotation_y: parseInt(val),
-                },
-              });
             } else if (shape.shapeType === "Cube") {
               setShape({
                 ...shape,
@@ -318,14 +302,6 @@ const RotationSlider = ({ text, value }) => {
                 ...shape,
                 squareFormula: {
                   ...shape.squareFormula,
-                  rotation_z: parseInt(val),
-                },
-              });
-            } else if (shape.shapeType === "Sphere") {
-              setShape({
-                ...shape,
-                sphereFormula: {
-                  ...shape.sphereFormula,
                   rotation_z: parseInt(val),
                 },
               });

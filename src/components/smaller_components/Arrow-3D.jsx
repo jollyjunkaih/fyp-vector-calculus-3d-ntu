@@ -75,6 +75,7 @@ export const ArrowMesh = ({
     _x = results.x;
     _y = results.y;
     _z = results.z;
+    console.log(results);
   }
   useEffect(() => {
     let m = Math.sqrt(i * i + j * j + k * k) * -0.1 + 0.25;
@@ -117,8 +118,6 @@ export const ArrowMesh = ({
                   <br />
                   Curl: <span>&#8711;</span>x<Vector text='u' /> ={" "}
                   {getCurl(vectorFormula, x, y, z)}
-                  <br />
-                  Magnitude:{magnitude}
                 </p>
               </div>
             </Html>
@@ -141,7 +140,7 @@ export const ArrowMesh = ({
   } else {
     return (
       <group
-        rotation={_x ? [_x, _y, _z] : undefined}
+        rotation={_x || _y || _z ? [_x, _y, _z] : [0, 0, 0]}
         onPointerOver={() => {
           setHover(true);
         }}
@@ -173,8 +172,6 @@ export const ArrowMesh = ({
                 <br />
                 Curl: <span>&#8711;</span>x<Vector text='u' /> ={" "}
                 {getCurl(vectorFormula, x, y, z)}
-                <br />
-                Magnitude:{magnitude}
               </p>
             </div>
           </Html>

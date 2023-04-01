@@ -1,8 +1,19 @@
 import { useThree, extend, useFrame } from "@react-three/fiber";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { buttonColor } from "../styles/Colours";
-import { VStack, Button, Text } from "@chakra-ui/react";
+import {
+  VStack,
+  Button,
+  Text,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderMark,
+  Tooltip,
+  HStack,
+} from "@chakra-ui/react";
 import { InlineMath } from "react-katex";
 import nerdamer from "nerdamer/all.min";
 import { Html } from "@react-three/drei";
@@ -11,6 +22,8 @@ import { ArrowMesh } from "./smaller_components/Arrow-3D";
 import { Axes } from "./smaller_components/VectorFieldComponents";
 import { LessonStoreContext } from "../context/lessonStore";
 import { useFormula } from "../utils/helperFunctions";
+import * as THREE from "three";
+
 extend({ OrbitControls });
 
 export const ScalarFieldVisual = () => {
@@ -199,5 +212,184 @@ export const VectorFieldVisual = () => {
         );
       })}
     </>
+  );
+};
+
+export const DivergenceVisual = () => {
+  const { divergenceData, setDivergenceData, gridSize } =
+    useContext(LessonStoreContext);
+  const { camera, gl } = useThree();
+  const [grid, setGrid] = useState([]);
+  const shapeRef = useRef();
+  useEffect(() => {
+    const array1 = [];
+    for (let i = -(gridSize - 4) / 2; i <= (gridSize - 4) / 2; i++) {
+      for (let j = -(gridSize - 4) / 2; j <= (gridSize - 4) / 2; j++) {
+        for (let k = -(gridSize - 4) / 2; k <= (gridSize - 4) / 2; k++) {
+          array1.push({ x: i, y: j, z: k });
+        }
+      }
+    }
+    setGrid(array1);
+  }, []);
+  useEffect(() => {
+    const eulerAngles = new THREE.Euler(
+      (divergenceData.rotation_x / 180) * Math.PI,
+      0,
+      (divergenceData.rotation_z / 180) * Math.PI
+    );
+    const nVector = new THREE.Vector3(0, 1, 0);
+    nVector.applyEuler(eulerAngles);
+    setDivergenceData({
+      ...divergenceData,
+      normal: `${nVector.x.toFixed(2)}i+(${nVector.y.toFixed(
+        2
+      )})j+(${nVector.z.toFixed(2)})k`,
+    });
+    const { _w, _x, _y, _z } = new THREE.Quaternion().setFromEuler(eulerAngles);
+    const quat = { w: _w, x: _x, y: _y, z: _z };
+    shapeRef.current.rotation.x = quat.x;
+    shapeRef.current.rotation.y = quat.y;
+    shapeRef.current.rotation.z = quat.z;
+  }, [divergenceData.rotation_x, divergenceData.rotation_z]);
+  return (
+    <>
+      <orbitControls args={[camera, gl.domElement]} />
+      <directionalLight position={[1, 2, 3]} intensity={1.5} />
+      <ambientLight intensity={0.5} />
+      <Axes gridSize={gridSize} />
+      <mesh ref={shapeRef}>
+        <cylinderGeometry args={[1, 1, 0.05]} />
+        <meshStandardMaterial side={THREE.DoubleSide} color='greenyellow' />
+      </mesh>
+      {grid.map((data) => {
+        const { x, y, z } = data;
+
+        if (divergenceData.direction == "X")
+          return (
+            <mesh position={[x, y, z]} key={JSON.stringify(data)}>
+              <ArrowMesh
+                vectorFormula={""}
+                x={x}
+                y={y}
+                z={z}
+                i={5}
+                j={0}
+                k={0}
+                playground={false}
+              />
+            </mesh>
+          );
+        else if (divergenceData.direction == "Y")
+          return (
+            <mesh position={[x, y, z]} key={JSON.stringify(data)}>
+              <ArrowMesh
+                vectorFormula={""}
+                x={x}
+                y={y}
+                z={z}
+                i={0}
+                j={5}
+                k={0}
+                playground={false}
+              />
+            </mesh>
+          );
+        else if (divergenceData.direction == "Z")
+          return (
+            <mesh position={[x, y, z]} key={JSON.stringify(data)}>
+              <ArrowMesh
+                vectorFormula={""}
+                x={x}
+                y={y}
+                z={z}
+                i={0}
+                j={0}
+                k={5}
+                playground={false}
+              />
+            </mesh>
+          );
+      })}
+    </>
+  );
+};
+
+export const RotationSlider = ({ text, value, state, setState }) => {
+  const [sliderValue, setSliderValue] = useState(0);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  return (
+    <VStack width={"90%"} height={16}>
+      <Text alignSelf={"start"} minWidth={"fit-content"} marginRight={5}>
+        {text}
+      </Text>
+      <Slider
+        min={-90}
+        max={90}
+        value={value}
+        aria-label='slider-ex-1'
+        val={sliderValue}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        onChange={(val) => {
+          setSliderValue(val);
+          if (text === "x-axis") {
+            setState({
+              ...state,
+              rotation_x: parseInt(val),
+            });
+          } else if (text === "y-axis") {
+            setState({
+              ...state,
+              rotation_y: parseInt(val),
+            });
+          } else if (text === "z-axis") {
+            setState({ ...state, rotation_z: parseInt(val) });
+          }
+        }}
+      >
+        <SliderMark
+          width={"fit-content"}
+          value={-90}
+          mt='1'
+          ml='-2.5'
+          fontSize='sm'
+        >
+          {"-90\u00B0"}
+        </SliderMark>
+        <SliderMark
+          width={"fit-content"}
+          value={0}
+          mt='1'
+          ml='-2.5'
+          fontSize='sm'
+        >
+          {"0\u00B0"}
+        </SliderMark>
+        <SliderMark
+          width={"fit-content"}
+          value={90}
+          mt='1'
+          ml='-2.5'
+          fontSize='sm'
+        >
+          {"90\u00B0"}
+        </SliderMark>
+        <Tooltip
+          hasArrow
+          bg='teal.500'
+          color='white'
+          placement='top'
+          isOpen={showTooltip}
+          label={`${sliderValue} \u00B0`}
+        >
+          <SliderThumb />
+        </Tooltip>
+        <SliderTrack>
+          <SliderFilledTrack />
+        </SliderTrack>
+      </Slider>
+    </VStack>
   );
 };
