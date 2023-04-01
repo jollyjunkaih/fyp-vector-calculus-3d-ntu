@@ -1,5 +1,5 @@
 import { Html, Line, Text } from "@react-three/drei";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { RigidBody, CuboidCollider } from "@react-three/rapier";
 import { PlaygroundStoreContext } from "../../context/playgroundStore";
 import { Vector } from "../../styles/Styles.jsx";
@@ -13,9 +13,15 @@ export default function Arrow({ data }) {
   const { x, y, z, i, j, k } = data;
 
   const [collision, setCollision] = useState(false);
-  const { planeOnly, vectorFormula } = useContext(PlaygroundStoreContext);
+  const { planeOnly, vectorFormula, shape } = useContext(
+    PlaygroundStoreContext
+  );
   const { _x, _y, _z } = getEulerRotation(i, j, k);
-
+  useEffect(() => {
+    if (collision) {
+      setCollision(false);
+    }
+  }, [shape?.shapeType]);
   return (
     <RigidBody
       type='fixed'
@@ -25,7 +31,9 @@ export default function Arrow({ data }) {
       onIntersectionEnter={() => {
         setCollision(true);
       }}
-      onIntersectionExit={() => setCollision(false)}
+      onCollisionExit={() => {
+        setCollision(false);
+      }}
     >
       <CuboidCollider args={[0.8, 0.1, 0.1]} />
       <ArrowMesh

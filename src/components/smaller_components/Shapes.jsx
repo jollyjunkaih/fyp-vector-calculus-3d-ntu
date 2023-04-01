@@ -57,7 +57,7 @@ const Circle = ({}) => {
 
   useEffect(() => {
     colliderRef.current.setRadius(radius);
-    console.log(colliderRef.current);
+    // console.log(colliderRef.current);
   }, [radius]);
 
   return (

@@ -218,13 +218,13 @@ export const getLineIntegralCircle = (vectorFormula, radius, circleFormula) => {
       diff = nerdamer(diff).sub("r", radius.toString()).toString();
       diffCircleFormula.push(diff);
     }
-    console.log(diffCircleFormula);
+    // console.log(diffCircleFormula);
     const vectorFieldAtRadius = nerdamer(
       `${X}*${diffCircleFormula[0]}+${Y}*${diffCircleFormula[1]}+${Z}*${diffCircleFormula[2]}`
     )
       .evaluate()
       .toString();
-    console.log(vectorFieldAtRadius);
+    // console.log(vectorFieldAtRadius);
 
     // console.log(
     //   nerdamer("integrate(cos(θ)*sin(θ)^3,θ)").toString()
@@ -237,14 +237,14 @@ export const getLineIntegralCircle = (vectorFormula, radius, circleFormula) => {
       .sub("r", radius)
       .evaluate()
       .text("decimals", 3);
-    console.log(equationWRT0);
+    // console.log(equationWRT0);
 
     //integral is broken
     let firstIntegral = nerdamer(`integrate(${equationWRT0},θ)`).text(
       "decimals",
       3
     );
-    console.log(firstIntegral);
+    // console.log(firstIntegral);
 
     const firstIntegral_0 = nerdamer(firstIntegral)
       .sub("θ", "0")
@@ -253,8 +253,8 @@ export const getLineIntegralCircle = (vectorFormula, radius, circleFormula) => {
       .sub("θ", "2π")
       .text("decimals", 3);
     firstIntegral = firstIntegral_2pi + "-" + firstIntegral_0;
-    console.log(firstIntegral_0);
-    console.log(firstIntegral_2pi);
+    // console.log(firstIntegral_0);
+    // console.log(firstIntegral_2pi);
 
     firstIntegral = nerdamer(firstIntegral).evaluate().text("decimals", 3);
     return parseFloat(firstIntegral).toFixed(2);
