@@ -25,8 +25,6 @@ import {
   FormulaInput,
   PlaneButton,
   ShapeButton,
-  CircleCenterInput,
-  RotationSlider,
   FormulaDisplay,
 } from "./smaller_components/SideMenuComponents";
 import { Card } from "../styles/Styles";

@@ -28,6 +28,9 @@ import nerdamer from "nerdamer/all.min";
 import {
   getCircleEquation,
   getFluxThroughCircularSurface,
+  getCurlThroughCircularSurface,
+  getLineIntegralCircle,
+  getSquareEquation,
 } from "../../utils/helperFunctions";
 import * as THREE from "three";
 import {
@@ -91,7 +94,7 @@ export const ShapeButton = ({ shapeText }) => {
     </Button>
   );
 };
-export const CircleCenterInput = ({ vector }) => {
+const CenterInput = ({ vector }) => {
   const { shape, setShape } = useContext(PlaygroundStoreContext);
   return (
     <InputGroup width={"20%"}>
@@ -101,29 +104,108 @@ export const CircleCenterInput = ({ vector }) => {
         onChange={(event) => {
           if (event.target.value != "" && event.target.value !== "-") {
             if (vector === "i") {
-              setShape({
-                ...shape,
-                circleFormula: {
-                  ...shape.circleFormula,
-                  center_x: parseInt(event.target.value),
-                },
-              });
-            } else if (vector === "j")
-              setShape({
-                ...shape,
-                circleFormula: {
-                  ...shape.circleFormula,
-                  center_y: parseInt(event.target.value),
-                },
-              });
-            else if (vector === "k")
-              setShape({
-                ...shape,
-                circleFormula: {
-                  ...shape.circleFormula,
-                  center_z: parseInt(event.target.value),
-                },
-              });
+              if (shape.shapeType === "Circle") {
+                setShape({
+                  ...shape,
+                  circleFormula: {
+                    ...shape.circleFormula,
+                    center_x: parseInt(event.target.value),
+                  },
+                });
+              } else if (shape.shapeType === "Square") {
+                setShape({
+                  ...shape,
+                  squareFormula: {
+                    ...shape.squareFormula,
+                    center_x: parseInt(event.target.value),
+                  },
+                });
+              } else if (shape.shapeType === "Sphere") {
+                setShape({
+                  ...shape,
+                  sphereFormula: {
+                    ...shape.sphereFormula,
+                    center_x: parseInt(event.target.value),
+                  },
+                });
+              } else if (shape.shapeType === "Cube") {
+                setShape({
+                  ...shape,
+                  cubeFormula: {
+                    ...shape.cubeFormula,
+                    center_x: parseInt(event.target.value),
+                  },
+                });
+              }
+            } else if (vector === "j") {
+              if (shape.shapeType === "Circle") {
+                setShape({
+                  ...shape,
+                  circleFormula: {
+                    ...shape.circleFormula,
+                    center_y: parseInt(event.target.value),
+                  },
+                });
+              } else if (shape.shapeType === "Square") {
+                setShape({
+                  ...shape,
+                  squareFormula: {
+                    ...shape.squareFormula,
+                    center_y: parseInt(event.target.value),
+                  },
+                });
+              } else if (shape.shapeType === "Sphere") {
+                setShape({
+                  ...shape,
+                  sphereFormula: {
+                    ...shape.sphereFormula,
+                    center_y: parseInt(event.target.value),
+                  },
+                });
+              } else if (shape.shapeType === "Cube") {
+                setShape({
+                  ...shape,
+                  cubeFormula: {
+                    ...shape.cubeFormula,
+                    center_y: parseInt(event.target.value),
+                  },
+                });
+              }
+            } else if (vector === "k") {
+              if (shape.shapeType === "Circle") {
+                setShape({
+                  ...shape,
+                  circleFormula: {
+                    ...shape.circleFormula,
+                    center_z: parseInt(event.target.value),
+                  },
+                });
+              } else if (shape.shapeType === "Square") {
+                setShape({
+                  ...shape,
+                  squareFormula: {
+                    ...shape.squareFormula,
+                    center_z: parseInt(event.target.value),
+                  },
+                });
+              } else if (shape.shapeType === "Sphere") {
+                setShape({
+                  ...shape,
+                  sphereFormula: {
+                    ...shape.sphereFormula,
+                    center_z: parseInt(event.target.value),
+                  },
+                });
+              } else if (shape.shapeType === "Cube") {
+                setShape({
+                  ...shape,
+                  cubeFormula: {
+                    ...shape.cubeFormula,
+                    center_z: parseInt(event.target.value),
+                  },
+                });
+              }
+            }
           }
         }}
       />
@@ -132,7 +214,7 @@ export const CircleCenterInput = ({ vector }) => {
   );
 };
 
-export const RotationSlider = ({ text }) => {
+const RotationSlider = ({ text }) => {
   const [sliderValue, setSliderValue] = useState(0);
   const [showTooltip, setShowTooltip] = React.useState(false);
   const { shape, setShape } = useContext(PlaygroundStoreContext);
@@ -151,30 +233,109 @@ export const RotationSlider = ({ text }) => {
         onMouseLeave={() => setShowTooltip(false)}
         onChange={(val) => {
           setSliderValue(val);
-          if (text === "x-axis")
-            setShape({
-              ...shape,
-              circleFormula: {
-                ...shape.circleFormula,
-                rotation_x: parseInt(val),
-              },
-            });
-          else if (text === "y-axis")
-            setShape({
-              ...shape,
-              circleFormula: {
-                ...shape.circleFormula,
-                rotation_y: parseInt(val),
-              },
-            });
-          else if (text === "z-axis")
-            setShape({
-              ...shape,
-              circleFormula: {
-                ...shape.circleFormula,
-                rotation_z: parseInt(val),
-              },
-            });
+          if (text === "x-axis") {
+            if (shape.shapeType === "Circle") {
+              setShape({
+                ...shape,
+                circleFormula: {
+                  ...shape.circleFormula,
+                  rotation_x: parseInt(val),
+                },
+              });
+            } else if (shape.shapeType === "Square") {
+              setShape({
+                ...shape,
+                squareFormula: {
+                  ...shape.squareFormula,
+                  rotation_x: parseInt(val),
+                },
+              });
+            } else if (shape.shapeType === "Sphere") {
+              setShape({
+                ...shape,
+                sphereFormula: {
+                  ...shape.sphereFormula,
+                  rotation_x: parseInt(val),
+                },
+              });
+            } else if (shape.shapeType === "Cube") {
+              setShape({
+                ...shape,
+                cubeFormula: {
+                  ...shape.cubeFormula,
+                  rotation_x: parseInt(val),
+                },
+              });
+            }
+          } else if (text === "y-axis") {
+            if (shape.shapeType === "Circle") {
+              setShape({
+                ...shape,
+                circleFormula: {
+                  ...shape.circleFormula,
+                  rotation_y: parseInt(val),
+                },
+              });
+            } else if (shape.shapeType === "Square") {
+              setShape({
+                ...shape,
+                squareFormula: {
+                  ...shape.squareFormula,
+                  rotation_y: parseInt(val),
+                },
+              });
+            } else if (shape.shapeType === "Sphere") {
+              setShape({
+                ...shape,
+                sphereFormula: {
+                  ...shape.sphereFormula,
+                  rotation_y: parseInt(val),
+                },
+              });
+            } else if (shape.shapeType === "Cube") {
+              setShape({
+                ...shape,
+                cubeFormula: {
+                  ...shape.cubeFormula,
+                  rotation_y: parseInt(val),
+                },
+              });
+            }
+          } else if (text === "z-axis") {
+            if (shape.shapeType === "Circle") {
+              setShape({
+                ...shape,
+                circleFormula: {
+                  ...shape.circleFormula,
+                  rotation_z: parseInt(val),
+                },
+              });
+            } else if (shape.shapeType === "Square") {
+              setShape({
+                ...shape,
+                squareFormula: {
+                  ...shape.squareFormula,
+                  rotation_z: parseInt(val),
+                },
+              });
+            } else if (shape.shapeType === "Sphere") {
+              setShape({
+                ...shape,
+                sphereFormula: {
+                  ...shape.sphereFormula,
+                  rotation_z: parseInt(val),
+                },
+              });
+            } else if (shape.shapeType === "Cube") {
+              setShape({
+                ...shape,
+                cubeFormula: {
+                  ...shape.cubeFormula,
+                  rotation_z: parseInt(val),
+                },
+              });
+            }
+          }
         }}
       >
         <SliderMark
@@ -244,6 +405,7 @@ export const ShapeSelection = () => {
   );
 
   if (shape.shapeType === "Circle") return <CircleOptions />;
+  else if (shape.shapeType === "Square") return <SquareOptions />;
 };
 
 const CircleOptions = () => {
@@ -252,8 +414,8 @@ const CircleOptions = () => {
   const [planeVector1, setPlaneVector1] = useState(new THREE.Vector3(0, 0, 1));
   const [planeVector2, setPlaneVector2] = useState(new THREE.Vector3(1, 0, 0));
   const [normalVector, setNormalVector] = useState(new THREE.Vector3(0, 1, 0));
-  const [circleFormula, setCircleFormula] = useState({});
-  const { circleFormula: formula } = shape;
+  const [circleEquation, setCircleEquation] = useState({});
+  const { circleFormula } = shape;
   const {
     radius = 1,
     center_x = 0,
@@ -262,7 +424,7 @@ const CircleOptions = () => {
     rotation_x = 0,
     rotation_y = 0,
     rotation_z = 0,
-  } = formula;
+  } = circleFormula;
   useEffect(() => {
     const eulerAngles = new THREE.Euler(
       (rotation_x / 180) * Math.PI,
@@ -281,12 +443,22 @@ const CircleOptions = () => {
     setNormalVector(v3);
   }, [rotation_x, rotation_y, rotation_z]);
   useEffect(() => {
-    setCircleFormula({
+    setCircleEquation({
       x: getCircleEquation(planeVector1.x, planeVector2.x, center_x),
       y: getCircleEquation(planeVector1.y, planeVector2.y, center_y),
       z: getCircleEquation(planeVector1.z, planeVector2.z, center_z),
     });
-  }, [planeVector1, planeVector2, center_x, center_y, center_z]);
+  }, [
+    planeVector1.x,
+    planeVector1.y,
+    planeVector1.z,
+    planeVector2.x,
+    planeVector2.y,
+    planeVector2.z,
+    center_x,
+    center_y,
+    center_z,
+  ]);
   return (
     <VStack alignItems={"start"} minHeight={"fit-content"}>
       <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
@@ -318,9 +490,9 @@ const CircleOptions = () => {
       <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
         <Text mb='8px'>Center</Text>
 
-        <CircleCenterInput vector='i' />
-        <CircleCenterInput vector='j' />
-        <CircleCenterInput vector='k' />
+        <CenterInput vector='i' />
+        <CenterInput vector='j' />
+        <CenterInput vector='k' />
       </HStack>
       <Text>Rotation</Text>
       <RotationSlider text={"x-axis"} />
@@ -346,9 +518,9 @@ const CircleOptions = () => {
         Equation of Circle:
       </Text>
 
-      <InlineMath>{`x(θ,r) = ${circleFormula.x}`}</InlineMath>
-      <InlineMath>{`y(θ,r) = ${circleFormula.y}`}</InlineMath>
-      <InlineMath>{`z(θ,r) = ${circleFormula.z}`}</InlineMath>
+      <InlineMath>{`x(θ,r) = ${circleEquation.x}`}</InlineMath>
+      <InlineMath>{`y(θ,r) = ${circleEquation.y}`}</InlineMath>
+      <InlineMath>{`z(θ,r) = ${circleEquation.z}`}</InlineMath>
       <Text fontSize={"lg"} as='b'>
         Properties:
       </Text>
@@ -366,8 +538,168 @@ const CircleOptions = () => {
           vectorFormula,
           normalVector,
           radius,
+          circleEquation
+        )}`}</InlineMath>
+      </Text>
+      <Text>
+        Curl:{" "}
+        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getCurlThroughCircularSurface(
+          vectorFormula,
+          normalVector,
+          radius,
+          circleEquation
+        )}`}</InlineMath>
+      </Text>
+      <Text>
+        Line Integral:{" "}
+        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getLineIntegralCircle(
+          vectorFormula,
+          radius,
+          circleEquation
+        )}`}</InlineMath>
+      </Text>
+    </VStack>
+  );
+};
+const SquareOptions = () => {
+  const { shape, setShape, planeOnly, setPlaneOnly, vectorFormula } =
+    useContext(PlaygroundStoreContext);
+  // const [planeVector1, setPlaneVector1] = useState(new THREE.Vector3(0, 0, 1));
+  // const [planeVector2, setPlaneVector2] = useState(new THREE.Vector3(1, 0, 0));
+  const [normalVector, setNormalVector] = useState(new THREE.Vector3(0, 1, 0));
+  const [squareEquation, setSquareEquation] = useState({});
+  const { squareFormula: formula } = shape;
+  const {
+    length = 1,
+    center_x = 0,
+    center_y = 0,
+    center_z = 0,
+    rotation_x = 0,
+    rotation_y = 0,
+    rotation_z = 0,
+  } = formula;
+  useEffect(() => {
+    const eulerAngles = new THREE.Euler(
+      (rotation_x / 180) * Math.PI,
+      (rotation_y / 180) * Math.PI,
+      (rotation_z / 180) * Math.PI
+    );
+
+    const v3 = new THREE.Vector3(0, 1, 0);
+
+    v3.applyEuler(eulerAngles);
+
+    setNormalVector(v3);
+  }, [rotation_x, rotation_y, rotation_z]);
+  useEffect(() => {
+    setSquareEquation(
+      getSquareEquation(normalVector, center_x, center_y, center_z)
+    );
+  }, [
+    normalVector.x,
+    normalVector.y,
+    normalVector.z,
+    center_x,
+    center_y,
+    center_z,
+  ]);
+  return (
+    <VStack alignItems={"start"} minHeight={"fit-content"}>
+      <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
+        <Text mb='8px'>Half-Length</Text>
+
+        <NumberInput
+          size={"sm"}
+          defaultValue={1}
+          onChange={(val) =>
+            setShape({
+              ...shape,
+              squareFormula: {
+                ...shape.squareFormula,
+                length: parseInt(val),
+              },
+            })
+          }
+          width={"30%"}
+          min={1}
+          max={5}
+        >
+          <NumberInputField />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+      </HStack>
+      <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
+        <Text mb='8px'>Center</Text>
+
+        <CenterInput vector='i' />
+        <CenterInput vector='j' />
+        <CenterInput vector='k' />
+      </HStack>
+      <Text>Rotation</Text>
+      <RotationSlider text={"x-axis"} />
+      <RotationSlider text={"y-axis"} />
+      <RotationSlider text={"z-axis"} />
+      <VStack alignSelf={"center"}>
+        <Button
+          bgColor={planeOnly ? selectedButtonColor : buttonColor}
+          onClick={() => {
+            setPlaneOnly(!planeOnly);
+          }}
+          marginTop={3}
+          alignSelf={"center"}
+        >
+          Only show vectors on the plane
+        </Button>
+      </VStack>
+      <Container height={5}>
+        <Divider padding={1} borderColor={navBarColor} />
+      </Container>
+
+      <Text fontSize={"lg"} as='b'>
+        Equation of Square:
+      </Text>
+
+      <InlineMath>{`${squareEquation} = 0`}</InlineMath>
+
+      <Text fontSize={"lg"} as='b'>
+        Properties:
+      </Text>
+      <Text>
+        Normal:{" "}
+        <InlineMath>{`\\widehat{n}= ${normalVector.x.toFixed(
+          2
+        )}i + ${normalVector.y.toFixed(2)}j + ${normalVector.z.toFixed(
+          2
+        )}k`}</InlineMath>
+      </Text>
+      <Text>
+        {/* Flux:{" "}
+        <InlineMath>{`\\iint_S f \\cdot\\widehat{n}\\cdot dA = ${getFluxThroughCircularSurface(
+          vectorFormula,
+          normalVector,
+          radius,
           circleFormula
         )}`}</InlineMath>
+      </Text>
+      <Text>
+        Curl:{" "}
+        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getCurlThroughCircularSurface(
+          vectorFormula,
+          normalVector,
+          radius,
+          circleFormula
+        )}`}</InlineMath>
+      </Text>
+      <Text>
+        Line Integral:{" "}
+        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getLineIntegralCircle(
+          vectorFormula,
+          radius,
+          circleFormula
+        )}`}</InlineMath> */}
       </Text>
     </VStack>
   );

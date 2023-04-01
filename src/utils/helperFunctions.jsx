@@ -1,5 +1,5 @@
 import nerdamer from "nerdamer/all.min";
-import { Euler, Quaternion, Vector3 } from "three";
+import { Euler, NeverDepth, Quaternion, Vector3 } from "three";
 
 import { Vector } from "../styles/Styles";
 
@@ -168,4 +168,128 @@ export const getFluxThroughCircularSurface = (
     finalValues[1] * normal.y +
     finalValues[2] * normal.z;
   return flux.toFixed(2);
+};
+
+export const getCurlThroughCircularSurface = (
+  vectorFormula,
+  normal,
+  radius,
+  circleFormula
+) => {
+  const { x, y, z } = circleFormula;
+
+  const { i: X, j: Y, k: Z } = vectorFormula;
+
+  const dZdy = nerdamer.diff(Z, "y", 1).toString();
+  const dYdz = nerdamer.diff(Y, "z", 1).toString();
+  const dXdz = nerdamer.diff(X, "z", 1).toString();
+  const dZdx = nerdamer.diff(Z, "x", 1).toString();
+  const dYdx = nerdamer.diff(Y, "x", 1).toString();
+  const dXdy = nerdamer.diff(X, "y", 1).toString();
+  const equation = `${normal.x}*(${dZdy}-${dYdz})+${normal.y}*(${dXdz}-${dZdx})+${normal.z}*(${dYdx}-${dXdy})`;
+  const equationWRT0andR = nerdamer(equation)
+    .sub("x", x)
+    .sub("y", y)
+    .sub("z", z)
+    .toString();
+  //integral is broken
+  let firstIntegral = nerdamer(`integrate(${equationWRT0andR},θ)`).toString();
+  const firstIntegral_0 = nerdamer(firstIntegral).sub("θ", "0").toString();
+  const firstIntegral_2pi = nerdamer(firstIntegral).sub("θ", "2π").toString();
+  firstIntegral = firstIntegral_2pi + "-" + firstIntegral_0;
+  const secondIntegral = nerdamer(
+    `defint(${nerdamer(firstIntegral)
+      .evaluate()
+      .toString()},0,${radius.toString()},r)`
+  )
+    .evaluate()
+    .text("decimals", 3);
+
+  return parseFloat(secondIntegral).toFixed(2);
+};
+
+export const getLineIntegralCircle = (vectorFormula, radius, circleFormula) => {
+  try {
+    const { x, y, z } = circleFormula;
+    const { i: X, j: Y, k: Z } = vectorFormula;
+    const diffCircleFormula = [];
+    for (const formula in circleFormula) {
+      let diff = nerdamer.diff(circleFormula[formula], "θ", 1).toString();
+      diff = nerdamer(diff).sub("r", radius.toString()).toString();
+      diffCircleFormula.push(diff);
+    }
+    console.log(diffCircleFormula);
+    const vectorFieldAtRadius = nerdamer(
+      `${X}*${diffCircleFormula[0]}+${Y}*${diffCircleFormula[1]}+${Z}*${diffCircleFormula[2]}`
+    )
+      .evaluate()
+      .toString();
+    console.log(vectorFieldAtRadius);
+
+    // console.log(
+    //   nerdamer("integrate(cos(θ)*sin(θ)^3,θ)").toString()
+    // );
+
+    let equationWRT0 = nerdamer(vectorFieldAtRadius)
+      .sub("x", x)
+      .sub("y", y)
+      .sub("z", z)
+      .sub("r", radius)
+      .evaluate()
+      .text("decimals", 3);
+    console.log(equationWRT0);
+
+    //integral is broken
+    let firstIntegral = nerdamer(`integrate(${equationWRT0},θ)`).text(
+      "decimals",
+      3
+    );
+    console.log(firstIntegral);
+
+    const firstIntegral_0 = nerdamer(firstIntegral)
+      .sub("θ", "0")
+      .text("decimals", 3);
+    const firstIntegral_2pi = nerdamer(firstIntegral)
+      .sub("θ", "2π")
+      .text("decimals", 3);
+    firstIntegral = firstIntegral_2pi + "-" + firstIntegral_0;
+    console.log(firstIntegral_0);
+    console.log(firstIntegral_2pi);
+
+    firstIntegral = nerdamer(firstIntegral).evaluate().text("decimals", 3);
+    return parseFloat(firstIntegral).toFixed(2);
+  } catch (e) {
+    console.log(e.message);
+    return 0;
+  }
+};
+
+// x^2+y^2   z^2-y*x   x*y*z
+
+export const getSquareEquation = (
+  normalVector,
+  center_x,
+  center_y,
+  center_z
+) => {
+  return;
+  `${
+    parseFloat(normalVector.x)
+      ? `${parseFloat(normalVector.x).toFixed(2)}(x ${
+          parseFloat(center_x) > 0 ? "-" : "+"
+        }${Math.abs(center_x)})`
+      : ""
+  }${parseFloat(normalVector.x) && parseFloat(normalVector.y) > 0 ? "+" : ""}${
+    parseFloat(normalVector.y)
+      ? `${parseFloat(normalVector.y).toFixed(2)}(y ${
+          parseFloat(center_y) > 0 ? "-" : "+"
+        }${Math.abs(center_y)})`
+      : ""
+  }${parseFloat(normalVector.y) && parseFloat(normalVector.z) > 0 ? "+" : ""}${
+    parseFloat(normalVector.z)
+      ? `${parseFloat(normalVector.z).toFixed(2)}(z ${
+          parseFloat(center_z) > 0 ? "-" : "+"
+        }${Math.abs(center_z)})`
+      : ""
+  }`;
 };
