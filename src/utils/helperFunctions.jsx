@@ -272,8 +272,7 @@ export const getSquareEquation = (
   center_y,
   center_z
 ) => {
-  return;
-  `${
+  return `${
     parseFloat(normalVector.x)
       ? `${parseFloat(normalVector.x).toFixed(2)}(x ${
           parseFloat(center_x) > 0 ? "-" : "+"
@@ -292,4 +291,16 @@ export const getSquareEquation = (
         }${Math.abs(center_z)})`
       : ""
   }`;
+};
+
+export const getSphereEquation = (center_x, center_y, center_z, radius) => {
+  return `(x ${parseFloat(center_x) > 0 ? "-" : "+"}${Math.abs(
+    center_x
+  )})^2+(y ${parseFloat(center_y) > 0 ? "-" : "+"}${Math.abs(center_y)})^2+(z ${
+    parseFloat(center_z) > 0 ? "-" : "+"
+  }${Math.abs(center_z)})^2=${Math.pow(radius, 2)}`;
+};
+
+export const getCubeEquation = () => {
+  return "";
 };

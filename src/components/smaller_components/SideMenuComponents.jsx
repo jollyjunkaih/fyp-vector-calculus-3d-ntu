@@ -31,6 +31,8 @@ import {
   getCurlThroughCircularSurface,
   getLineIntegralCircle,
   getSquareEquation,
+  getSphereEquation,
+  getCubeEquation,
 } from "../../utils/helperFunctions";
 import * as THREE from "three";
 import {
@@ -94,13 +96,13 @@ export const ShapeButton = ({ shapeText }) => {
     </Button>
   );
 };
-const CenterInput = ({ vector }) => {
+const CenterInput = ({ vector, value }) => {
   const { shape, setShape } = useContext(PlaygroundStoreContext);
   return (
     <InputGroup width={"20%"}>
       <Input
         type='number'
-        defaultValue={0}
+        value={value || 0}
         onChange={(event) => {
           if (event.target.value != "" && event.target.value !== "-") {
             if (vector === "i") {
@@ -214,7 +216,7 @@ const CenterInput = ({ vector }) => {
   );
 };
 
-const RotationSlider = ({ text }) => {
+const RotationSlider = ({ text, value }) => {
   const [sliderValue, setSliderValue] = useState(0);
   const [showTooltip, setShowTooltip] = React.useState(false);
   const { shape, setShape } = useContext(PlaygroundStoreContext);
@@ -227,6 +229,7 @@ const RotationSlider = ({ text }) => {
       <Slider
         min={-90}
         max={90}
+        value={value}
         aria-label='slider-ex-1'
         val={sliderValue}
         onMouseEnter={() => setShowTooltip(true)}
@@ -406,6 +409,8 @@ export const ShapeSelection = () => {
 
   if (shape.shapeType === "Circle") return <CircleOptions />;
   else if (shape.shapeType === "Square") return <SquareOptions />;
+  else if (shape.shapeType === "Sphere") return <SphereOptions />;
+  else if (shape.shapeType === "Cube") return <CubeOptions />;
 };
 
 const CircleOptions = () => {
@@ -416,15 +421,13 @@ const CircleOptions = () => {
   const [normalVector, setNormalVector] = useState(new THREE.Vector3(0, 1, 0));
   const [circleEquation, setCircleEquation] = useState({});
   const { circleFormula } = shape;
-  const {
-    radius = 1,
-    center_x = 0,
-    center_y = 0,
-    center_z = 0,
-    rotation_x = 0,
-    rotation_y = 0,
-    rotation_z = 0,
-  } = circleFormula;
+  const radius = circleFormula.radius || 1;
+  const center_x = circleFormula.center_x || 0;
+  const center_y = circleFormula.center_y || 0;
+  const center_z = circleFormula.center_z || 0;
+  const rotation_x = circleFormula.rotation_x || 0;
+  const rotation_y = circleFormula.rotation_y || 0;
+  const rotation_z = circleFormula.rotation_y || 0;
   useEffect(() => {
     const eulerAngles = new THREE.Euler(
       (rotation_x / 180) * Math.PI,
@@ -490,14 +493,14 @@ const CircleOptions = () => {
       <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
         <Text mb='8px'>Center</Text>
 
-        <CenterInput vector='i' />
-        <CenterInput vector='j' />
-        <CenterInput vector='k' />
+        <CenterInput vector='i' value={center_x} />
+        <CenterInput vector='j' value={center_y} />
+        <CenterInput vector='k' value={center_z} />
       </HStack>
       <Text>Rotation</Text>
-      <RotationSlider text={"x-axis"} />
-      <RotationSlider text={"y-axis"} />
-      <RotationSlider text={"z-axis"} />
+      <RotationSlider text={"x-axis"} value={rotation_x} />
+      <RotationSlider text={"y-axis"} value={rotation_y} />
+      <RotationSlider text={"z-axis"} value={rotation_z} />
       <VStack alignSelf={"center"}>
         <Button
           bgColor={planeOnly ? selectedButtonColor : buttonColor}
@@ -568,16 +571,14 @@ const SquareOptions = () => {
   // const [planeVector2, setPlaneVector2] = useState(new THREE.Vector3(1, 0, 0));
   const [normalVector, setNormalVector] = useState(new THREE.Vector3(0, 1, 0));
   const [squareEquation, setSquareEquation] = useState({});
-  const { squareFormula: formula } = shape;
-  const {
-    length = 1,
-    center_x = 0,
-    center_y = 0,
-    center_z = 0,
-    rotation_x = 0,
-    rotation_y = 0,
-    rotation_z = 0,
-  } = formula;
+  const { squareFormula } = shape;
+  const length = squareFormula.length || 1;
+  const center_x = squareFormula.center_x || 0;
+  const center_y = squareFormula.center_y || 0;
+  const center_z = squareFormula.center_z || 0;
+  const rotation_x = squareFormula.rotation_x || 0;
+  const rotation_y = squareFormula.rotation_y || 0;
+  const rotation_z = squareFormula.rotation_y || 0;
   useEffect(() => {
     const eulerAngles = new THREE.Euler(
       (rotation_x / 180) * Math.PI,
@@ -634,14 +635,14 @@ const SquareOptions = () => {
       <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
         <Text mb='8px'>Center</Text>
 
-        <CenterInput vector='i' />
-        <CenterInput vector='j' />
-        <CenterInput vector='k' />
+        <CenterInput vector='i' value={center_x} />
+        <CenterInput vector='j' value={center_y} />
+        <CenterInput vector='k' value={center_z} />
       </HStack>
       <Text>Rotation</Text>
-      <RotationSlider text={"x-axis"} />
-      <RotationSlider text={"y-axis"} />
-      <RotationSlider text={"z-axis"} />
+      <RotationSlider text={"x-axis"} value={rotation_x} />
+      <RotationSlider text={"y-axis"} value={rotation_y} />
+      <RotationSlider text={"z-axis"} value={rotation_z} />
       <VStack alignSelf={"center"}>
         <Button
           bgColor={planeOnly ? selectedButtonColor : buttonColor}
@@ -675,6 +676,252 @@ const SquareOptions = () => {
           2
         )}k`}</InlineMath>
       </Text>
+      <Text>
+        {/* Flux:{" "}
+        <InlineMath>{`\\iint_S f \\cdot\\widehat{n}\\cdot dA = ${getFluxThroughCircularSurface(
+          vectorFormula,
+          normalVector,
+          radius,
+          circleFormula
+        )}`}</InlineMath>
+      </Text>
+      <Text>
+        Curl:{" "}
+        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getCurlThroughCircularSurface(
+          vectorFormula,
+          normalVector,
+          radius,
+          circleFormula
+        )}`}</InlineMath>
+      </Text>
+      <Text>
+        Line Integral:{" "}
+        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getLineIntegralCircle(
+          vectorFormula,
+          radius,
+          circleFormula
+        )}`}</InlineMath> */}
+      </Text>
+    </VStack>
+  );
+};
+
+const SphereOptions = () => {
+  const { shape, setShape, planeOnly, setPlaneOnly, vectorFormula } =
+    useContext(PlaygroundStoreContext);
+
+  const [sphereEquation, setSphereEquation] = useState({});
+  const { sphereFormula } = shape;
+  const radius = sphereFormula.radius || 1;
+  const center_x = sphereFormula.center_x || 0;
+  const center_y = sphereFormula.center_y || 0;
+  const center_z = sphereFormula.center_z || 0;
+
+  useEffect(() => {
+    setSphereEquation(getSphereEquation(center_x, center_y, center_z, radius));
+  }, [center_x, center_y, center_z, radius]);
+  return (
+    <VStack alignItems={"start"} minHeight={"fit-content"}>
+      <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
+        <Text mb='8px'>Radius</Text>
+
+        <NumberInput
+          size={"sm"}
+          value={radius}
+          onChange={(val) =>
+            setShape({
+              ...shape,
+              sphereFormula: {
+                ...shape.sphereFormula,
+                radius: parseInt(val),
+              },
+            })
+          }
+          width={"30%"}
+          min={1}
+          max={5}
+        >
+          <NumberInputField />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+      </HStack>
+      <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
+        <Text mb='8px'>Center</Text>
+        <CenterInput vector='i' value={center_x} />
+        <CenterInput vector='j' value={center_y} />
+        <CenterInput vector='k' value={center_z} />
+      </HStack>
+      <VStack alignSelf={"center"}>
+        <Button
+          bgColor={planeOnly ? selectedButtonColor : buttonColor}
+          onClick={() => {
+            setPlaneOnly(!planeOnly);
+          }}
+          marginTop={3}
+          alignSelf={"center"}
+        >
+          Only show vectors on the plane
+        </Button>
+      </VStack>
+      <Container height={5}>
+        <Divider padding={1} borderColor={navBarColor} />
+      </Container>
+
+      <Text fontSize={"lg"} as='b'>
+        Equation of Sphere:
+      </Text>
+
+      <InlineMath>{sphereEquation}</InlineMath>
+
+      <Text fontSize={"lg"} as='b'>
+        Properties:
+      </Text>
+
+      <Text>
+        {/* Flux:{" "}
+        <InlineMath>{`\\iint_S f \\cdot\\widehat{n}\\cdot dA = ${getFluxThroughCircularSurface(
+          vectorFormula,
+          normalVector,
+          radius,
+          circleFormula
+        )}`}</InlineMath>
+      </Text>
+      <Text>
+        Curl:{" "}
+        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getCurlThroughCircularSurface(
+          vectorFormula,
+          normalVector,
+          radius,
+          circleFormula
+        )}`}</InlineMath>
+      </Text>
+      <Text>
+        Line Integral:{" "}
+        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getLineIntegralCircle(
+          vectorFormula,
+          radius,
+          circleFormula
+        )}`}</InlineMath> */}
+      </Text>
+    </VStack>
+  );
+};
+
+const CubeOptions = () => {
+  const { shape, setShape, planeOnly, setPlaneOnly, vectorFormula } =
+    useContext(PlaygroundStoreContext);
+  // const [planeVector1, setPlaneVector1] = useState(new THREE.Vector3(0, 0, 1));
+  // const [planeVector2, setPlaneVector2] = useState(new THREE.Vector3(1, 0, 0));
+  const [normalVector, setNormalVector] = useState(new THREE.Vector3(0, 1, 0));
+  const [cubeEquation, setCubeEquation] = useState({});
+  const { cubeFormula } = shape;
+  const length = cubeFormula.length || 1;
+  const center_x = cubeFormula.center_x || 0;
+  const center_y = cubeFormula.center_y || 0;
+  const center_z = cubeFormula.center_z || 0;
+  const rotation_x = cubeFormula.rotation_x || 0;
+  const rotation_y = cubeFormula.rotation_y || 0;
+  const rotation_z = cubeFormula.rotation_y || 0;
+  useEffect(() => {
+    const eulerAngles = new THREE.Euler(
+      (rotation_x / 180) * Math.PI,
+      (rotation_y / 180) * Math.PI,
+      (rotation_z / 180) * Math.PI
+    );
+
+    const v3 = new THREE.Vector3(0, 1, 0);
+
+    v3.applyEuler(eulerAngles);
+
+    setNormalVector(v3);
+  }, [rotation_x, rotation_y, rotation_z]);
+  useEffect(() => {
+    setCubeEquation(
+      getCubeEquation(normalVector, center_x, center_y, center_z)
+    );
+  }, [
+    normalVector.x,
+    normalVector.y,
+    normalVector.z,
+    center_x,
+    center_y,
+    center_z,
+  ]);
+  return (
+    <VStack alignItems={"start"} minHeight={"fit-content"}>
+      <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
+        <Text mb='8px'>Half-Length</Text>
+
+        <NumberInput
+          size={"sm"}
+          value={length}
+          onChange={(val) =>
+            setShape({
+              ...shape,
+              cubeFormula: {
+                ...shape.cubeFormula,
+                length: parseInt(val),
+              },
+            })
+          }
+          width={"30%"}
+          min={1}
+          max={5}
+        >
+          <NumberInputField />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+      </HStack>
+      <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
+        <Text mb='8px'>Center</Text>
+
+        <CenterInput vector='i' value={center_x} />
+        <CenterInput vector='j' value={center_y} />
+        <CenterInput vector='k' value={center_z} />
+      </HStack>
+      <Text>Rotation</Text>
+      <RotationSlider text={"x-axis"} value={rotation_x} />
+      <RotationSlider text={"y-axis"} value={rotation_y} />
+      <RotationSlider text={"z-axis"} value={rotation_z} />
+      <VStack alignSelf={"center"}>
+        <Button
+          bgColor={planeOnly ? selectedButtonColor : buttonColor}
+          onClick={() => {
+            setPlaneOnly(!planeOnly);
+          }}
+          marginTop={3}
+          alignSelf={"center"}
+        >
+          Only show vectors on the plane
+        </Button>
+      </VStack>
+      <Container height={5}>
+        <Divider padding={1} borderColor={navBarColor} />
+      </Container>
+
+      <Text fontSize={"lg"} as='b'>
+        Equation of Cube:
+      </Text>
+
+      <InlineMath>{`${cubeEquation} = 0`}</InlineMath>
+
+      <Text fontSize={"lg"} as='b'>
+        Properties:
+      </Text>
+      {/* <Text>
+        Normal:{" "}
+        <InlineMath>{`\\widehat{n}= ${normalVector.x.toFixed(
+          2
+        )}i + ${normalVector.y.toFixed(2)}j + ${normalVector.z.toFixed(
+          2
+        )}k`}</InlineMath>
+      </Text> */}
       <Text>
         {/* Flux:{" "}
         <InlineMath>{`\\iint_S f \\cdot\\widehat{n}\\cdot dA = ${getFluxThroughCircularSurface(
