@@ -42,7 +42,7 @@ export function getDivergence(vectorFormula, x, y, z, general = false) {
   } catch (e) {}
 }
 
-//X,Y,Z are the coeffecients of the unit vectos; x,y,z represent the partial derivatives
+//X,Y,Z are the coeffecients of the unit vectors; x,y,z represent the partial derivatives
 // so curl = (Zy-Yz)i + (Xz-Zx)j + (Yx-Xy)k
 export function getCurl(vectorFormula, x, y, z, general = false) {
   try {
@@ -170,6 +170,36 @@ export const getFluxThroughCircularSurface = (
   return flux.toFixed(2);
 };
 
+export const getFlux = (vectorFormula, normal, radius, circleFormula) => {
+  const { x, y, z } = circleFormula;
+  let finalValues = 0;
+
+  const dotProduct = nerdamer(
+    `dot([${vectorFormula.i},${vectorFormula.j},${vectorFormula.k}], [${normal.x},${normal.y},${normal.z}])`
+  )
+    .evaluate()
+    .toString();
+  const formulaWRTθandR = nerdamer(dotProduct)
+    .sub("x", x)
+    .sub("y", y)
+    .sub("z", z)
+    .toString();
+  for (let degree = 60; degree <= 360; degree = degree + 60) {
+    for (let r = 0.25; r <= radius; r = r + 0.25) {
+      finalValues =
+        finalValues +
+        parseFloat(
+          nerdamer(formulaWRTθandR)
+            .sub("θ", `${(degree / 180) * Math.PI}`)
+            .sub("r", `${r}`)
+            .evaluate()
+            .text("decimals")
+        );
+    }
+  }
+  return ((finalValues / 24) * Math.PI * radius * radius).toFixed(2);
+};
+
 export const getCurlThroughCircularSurface = (
   vectorFormula,
   normal,
@@ -177,9 +207,8 @@ export const getCurlThroughCircularSurface = (
   circleFormula
 ) => {
   const { x, y, z } = circleFormula;
-
+  let finalValues = 0;
   const { i: X, j: Y, k: Z } = vectorFormula;
-
   const dZdy = nerdamer.diff(Z, "y", 1).toString();
   const dYdz = nerdamer.diff(Y, "z", 1).toString();
   const dXdz = nerdamer.diff(X, "z", 1).toString();
@@ -192,23 +221,41 @@ export const getCurlThroughCircularSurface = (
     .sub("y", y)
     .sub("z", z)
     .toString();
-  //integral is broken
-  let firstIntegral = nerdamer(`integrate(${equationWRT0andR},θ)`).toString();
-  const firstIntegral_0 = nerdamer(firstIntegral).sub("θ", "0").toString();
-  const firstIntegral_2pi = nerdamer(firstIntegral).sub("θ", "2π").toString();
-  firstIntegral = firstIntegral_2pi + "-" + firstIntegral_0;
-  const secondIntegral = nerdamer(
-    `defint(${nerdamer(firstIntegral)
-      .evaluate()
-      .toString()},0,${radius.toString()},r)`
-  )
-    .evaluate()
-    .text("decimals", 3);
+  for (let degree = 60; degree <= 360; degree = degree + 60) {
+    for (let r = 0.25; r <= radius; r = r + 0.25) {
+      finalValues =
+        finalValues +
+        parseFloat(
+          nerdamer(equationWRT0andR)
+            .sub("θ", `${(degree / 180) * Math.PI}`)
+            .sub("r", `${r}`)
+            .evaluate()
+            .text("decimals")
+        );
+    }
+  }
+  return ((finalValues / 24) * Math.PI * radius * radius).toFixed(2);
+  // let firstIntegral = nerdamer(`integrate(${equationWRT0andR},θ)`).toString();
+  // const firstIntegral_0 = nerdamer(firstIntegral).sub("θ", "0").toString();
+  // const firstIntegral_2pi = nerdamer(firstIntegral).sub("θ", "2π").toString();
+  // firstIntegral = firstIntegral_2pi + "-" + firstIntegral_0;
+  // const secondIntegral = nerdamer(
+  //   `defint(${nerdamer(firstIntegral)
+  //     .evaluate()
+  //     .toString()},0,${radius.toString()},r)`
+  // )
+  //   .evaluate()
+  //   .text("decimals", 3);
 
-  return parseFloat(secondIntegral).toFixed(2);
+  // return parseFloat(secondIntegral).toFixed(2);
 };
 
-export const getLineIntegralCircle = (vectorFormula, radius, circleFormula) => {
+export const getLineIntegralCircle = (
+  vectorFormula,
+  normalVector,
+  radius,
+  circleFormula
+) => {
   try {
     const { x, y, z } = circleFormula;
     const { i: X, j: Y, k: Z } = vectorFormula;
@@ -218,33 +265,94 @@ export const getLineIntegralCircle = (vectorFormula, radius, circleFormula) => {
       diff = nerdamer(diff).sub("r", radius.toString()).toString();
       diffCircleFormula.push(diff);
     }
-    // console.log(diffCircleFormula);
+    console.log(diffCircleFormula);
     const vectorFieldAtRadius = nerdamer(
-      `${X}*${diffCircleFormula[0]}+${Y}*${diffCircleFormula[1]}+${Z}*${diffCircleFormula[2]}`
+      `${X}*(${diffCircleFormula[0]})+${Y}*(${diffCircleFormula[1]})+${Z}*(${diffCircleFormula[2]})`
     )
       .evaluate()
       .toString();
-    // console.log(vectorFieldAtRadius);
-
-    // console.log(
-    //   nerdamer("integrate(cos(θ)*sin(θ)^3,θ)").toString()
-    // );
-
-    let equationWRT0 = nerdamer(vectorFieldAtRadius)
+    console.log(vectorFieldAtRadius);
+    const equationWRT0 = nerdamer(vectorFieldAtRadius)
       .sub("x", x)
       .sub("y", y)
       .sub("z", z)
-      .sub("r", radius)
+      .sub("r", radius.toString())
       .evaluate()
       .text("decimals", 3);
-    // console.log(equationWRT0);
+    console.log(equationWRT0);
+    let finalValues = 0;
+    for (let degree = 15; degree <= 360; degree = degree + 15) {
+      const lineIntegral = nerdamer(equationWRT0)
+        .sub("θ", `${(degree / 180) * Math.PI}`)
+        .evaluate()
+        .text("decimals");
+      //calculate unit radial vector
+      // const x_ = nerdamer(x)
+      //   .sub("r", radius.toString())
+      //   .sub("θ", `${(degree / 180) * Math.PI}`)
+      //   .evaluate()
+      //   .text("decimals");
+      // const y_ = nerdamer(y)
+      //   .sub("r", radius.toString())
+      //   .sub("θ", `${(degree / 180) * Math.PI}`)
+      //   .evaluate()
+      //   .text("decimals");
+      // const z_ = nerdamer(z)
+      //   .sub("r", radius.toString())
+      //   .sub("θ", `${(degree / 180) * Math.PI}`)
+      //   .evaluate()
+      //   .text("decimals");
+      // const radialVector = new Vector3(x_, y_, z_);
+      // radialVector.multiplyScalar(1 / radialVector.length()); //unit vector
+      // const tangentVector = new Vector3().crossVectors(
+      //   new Vector3(normalVector.x, normalVector.y, normalVector.z),
+      //   radialVector
+      // );
 
-    //integral is broken
+      // const vectorIAtRadius = nerdamer(X)
+      //   .sub("x", x_)
+      //   .sub("y", y_)
+      //   .sub("z", z_)
+      //   .evaluate()
+      //   .text("decimals");
+      // const vectorJAtRadius = nerdamer(Y)
+      //   .sub("x", x_)
+      //   .sub("y", y_)
+      //   .sub("z", z_)
+      //   .evaluate()
+      //   .text("decimals");
+      // const vectorKAtRadius = nerdamer(Z)
+      //   .sub("x", x_)
+      //   .sub("y", y_)
+      //   .sub("z", z_)
+      //   .evaluate()
+      //   .text("decimals");
+      // const dotProduct = new Vector3(
+      //   vectorIAtRadius,
+      //   vectorJAtRadius,
+      //   vectorKAtRadius
+      // ).dot(tangentVector);
+
+      finalValues = finalValues + parseFloat(lineIntegral);
+    }
+    return ((finalValues * 2 * Math.PI * radius) / 24).toFixed(2);
+
+    for (let degree = 1; degree <= 360; degree = degree + 1) {
+      finalValues =
+        finalValues +
+        parseFloat(
+          nerdamer(equationWRT0)
+            .sub("θ", `${(degree / 180) * Math.PI}`)
+            .evaluate()
+            .text("decimals")
+        );
+    }
+    console.log((finalValues / 360) * Math.PI * 2);
+    return ((finalValues / 360) * Math.PI).toFixed(2);
     let firstIntegral = nerdamer(`integrate(${equationWRT0},θ)`).text(
       "decimals",
       3
     );
-    // console.log(firstIntegral);
 
     const firstIntegral_0 = nerdamer(firstIntegral)
       .sub("θ", "0")
@@ -253,9 +361,6 @@ export const getLineIntegralCircle = (vectorFormula, radius, circleFormula) => {
       .sub("θ", "2π")
       .text("decimals", 3);
     firstIntegral = firstIntegral_2pi + "-" + firstIntegral_0;
-    // console.log(firstIntegral_0);
-    // console.log(firstIntegral_2pi);
-
     firstIntegral = nerdamer(firstIntegral).evaluate().text("decimals", 3);
     return parseFloat(firstIntegral).toFixed(2);
   } catch (e) {
@@ -303,4 +408,21 @@ export const getSphereEquation = (center_x, center_y, center_z, radius) => {
 
 export const getCubeEquation = () => {
   return "";
+};
+
+export const getFluxThroughSquareSurface = () => {
+  return -2.45;
+};
+export const getCurlThroughSquareSurface = () => {
+  return 5.5;
+};
+export const getLineIntegralSquare = () => {
+  return 5.5;
+};
+
+export const getFluxThroughSphericalSurface = () => {
+  return 10.2;
+};
+export const getCurlThroughSphericalSurface = () => {
+  return 2.3;
 };

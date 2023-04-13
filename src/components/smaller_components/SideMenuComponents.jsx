@@ -30,9 +30,15 @@ import {
   getFluxThroughCircularSurface,
   getCurlThroughCircularSurface,
   getLineIntegralCircle,
+  getFluxThroughSquareSurface,
+  getCurlThroughSquareSurface,
+  getLineIntegralSquare,
   getSquareEquation,
   getSphereEquation,
   getCubeEquation,
+  getFluxThroughSphericalSurface,
+  getCurlThroughSphericalSurface,
+  getFlux,
 } from "../../utils/helperFunctions";
 import * as THREE from "three";
 import {
@@ -218,7 +224,7 @@ const CenterInput = ({ vector, value }) => {
 
 const RotationSlider = ({ text, value }) => {
   const [sliderValue, setSliderValue] = useState(0);
-  const [showTooltip, setShowTooltip] = React.useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const { shape, setShape } = useContext(PlaygroundStoreContext);
 
   return (
@@ -231,7 +237,6 @@ const RotationSlider = ({ text, value }) => {
         max={90}
         value={value}
         aria-label='slider-ex-1'
-        val={sliderValue}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
         onChange={(val) => {
@@ -403,14 +408,13 @@ const CircleOptions = () => {
   const center_z = circleFormula.center_z || 0;
   const rotation_x = circleFormula.rotation_x || 0;
   const rotation_y = circleFormula.rotation_y || 0;
-  const rotation_z = circleFormula.rotation_y || 0;
+  const rotation_z = circleFormula.rotation_z || 0;
   useEffect(() => {
     const eulerAngles = new THREE.Euler(
       (rotation_x / 180) * Math.PI,
       (rotation_y / 180) * Math.PI,
       (rotation_z / 180) * Math.PI
     );
-
     const v1 = new THREE.Vector3(0, 0, 1);
     const v2 = new THREE.Vector3(1, 0, 0);
     const v3 = new THREE.Vector3(0, 1, 0);
@@ -421,6 +425,7 @@ const CircleOptions = () => {
     setPlaneVector2(v2);
     setNormalVector(v3);
   }, [rotation_x, rotation_y, rotation_z]);
+
   useEffect(() => {
     setCircleEquation({
       x: getCircleEquation(planeVector1.x, planeVector2.x, center_x),
@@ -445,7 +450,7 @@ const CircleOptions = () => {
 
         <NumberInput
           size={"sm"}
-          defaultValue={1}
+          value={radius}
           onChange={(val) =>
             setShape({
               ...shape,
@@ -528,11 +533,14 @@ const CircleOptions = () => {
           radius,
           circleEquation
         )}`}</InlineMath>
+        {"  "}
+        <InlineMath>{"\\widehat{n}"}</InlineMath>
       </Text>
       <Text>
         Line Integral:{" "}
-        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getLineIntegralCircle(
+        <InlineMath>{`\\oint f \\cdot d \\widehat{r}= ${getLineIntegralCircle(
           vectorFormula,
+          normalVector,
           radius,
           circleEquation
         )}`}</InlineMath>
@@ -543,8 +551,6 @@ const CircleOptions = () => {
 const SquareOptions = () => {
   const { shape, setShape, planeOnly, setPlaneOnly, vectorFormula } =
     useContext(PlaygroundStoreContext);
-  // const [planeVector1, setPlaneVector1] = useState(new THREE.Vector3(0, 0, 1));
-  // const [planeVector2, setPlaneVector2] = useState(new THREE.Vector3(1, 0, 0));
   const [normalVector, setNormalVector] = useState(new THREE.Vector3(0, 1, 0));
   const [squareEquation, setSquareEquation] = useState({});
   const { squareFormula } = shape;
@@ -554,16 +560,14 @@ const SquareOptions = () => {
   const center_z = squareFormula.center_z || 0;
   const rotation_x = squareFormula.rotation_x || 0;
   const rotation_y = squareFormula.rotation_y || 0;
-  const rotation_z = squareFormula.rotation_y || 0;
+  const rotation_z = squareFormula.rotation_z || 0;
   useEffect(() => {
     const eulerAngles = new THREE.Euler(
       (rotation_x / 180) * Math.PI,
       (rotation_y / 180) * Math.PI,
       (rotation_z / 180) * Math.PI
     );
-
     const v3 = new THREE.Vector3(0, 1, 0);
-
     v3.applyEuler(eulerAngles);
 
     setNormalVector(v3);
@@ -584,10 +588,9 @@ const SquareOptions = () => {
     <VStack alignItems={"start"} minHeight={"fit-content"}>
       <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
         <Text mb='8px'>Half-Length</Text>
-
         <NumberInput
           size={"sm"}
-          defaultValue={1}
+          value={length}
           onChange={(val) =>
             setShape({
               ...shape,
@@ -610,7 +613,6 @@ const SquareOptions = () => {
       </HStack>
       <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
         <Text mb='8px'>Center</Text>
-
         <CenterInput vector='i' value={center_x} />
         <CenterInput vector='j' value={center_y} />
         <CenterInput vector='k' value={center_z} />
@@ -634,13 +636,10 @@ const SquareOptions = () => {
       <Container height={5}>
         <Divider padding={1} borderColor={navBarColor} />
       </Container>
-
       <Text fontSize={"lg"} as='b'>
         Equation of Square:
       </Text>
-
       <InlineMath>{`${squareEquation} = 0`}</InlineMath>
-
       <Text fontSize={"lg"} as='b'>
         Properties:
       </Text>
@@ -653,30 +652,30 @@ const SquareOptions = () => {
         )}k`}</InlineMath>
       </Text>
       <Text>
-        {/* Flux:{" "}
-        <InlineMath>{`\\iint_S f \\cdot\\widehat{n}\\cdot dA = ${getFluxThroughCircularSurface(
+        Flux:{" "}
+        <InlineMath>{`\\iint_S f \\cdot\\widehat{n}\\cdot dA = ${getFluxThroughSquareSurface(
           vectorFormula,
           normalVector,
-          radius,
-          circleFormula
+          length,
+          squareFormula
         )}`}</InlineMath>
       </Text>
       <Text>
         Curl:{" "}
-        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getCurlThroughCircularSurface(
+        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getCurlThroughSquareSurface(
           vectorFormula,
           normalVector,
-          radius,
-          circleFormula
+          length,
+          squareFormula
         )}`}</InlineMath>
       </Text>
       <Text>
         Line Integral:{" "}
-        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getLineIntegralCircle(
+        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getLineIntegralSquare(
           vectorFormula,
-          radius,
-          circleFormula
-        )}`}</InlineMath> */}
+          length,
+          squareFormula
+        )}`}</InlineMath>
       </Text>
     </VStack>
   );
@@ -700,7 +699,6 @@ const SphereOptions = () => {
     <VStack alignItems={"start"} minHeight={"fit-content"}>
       <HStack width={"100%"} justifyContent={"space-between"} marginTop={2}>
         <Text mb='8px'>Radius</Text>
-
         <NumberInput
           size={"sm"}
           value={radius}
@@ -745,42 +743,28 @@ const SphereOptions = () => {
       <Container height={5}>
         <Divider padding={1} borderColor={navBarColor} />
       </Container>
-
       <Text fontSize={"lg"} as='b'>
         Equation of Sphere:
       </Text>
-
       <InlineMath>{sphereEquation}</InlineMath>
-
       <Text fontSize={"lg"} as='b'>
         Properties:
       </Text>
-
       <Text>
-        {/* Flux:{" "}
-        <InlineMath>{`\\iint_S f \\cdot\\widehat{n}\\cdot dA = ${getFluxThroughCircularSurface(
+        Flux:{" "}
+        <InlineMath>{`\\iint_S f \\cdot\\widehat{n}\\cdot dA = ${getFluxThroughSphericalSurface(
           vectorFormula,
-          normalVector,
           radius,
-          circleFormula
+          sphereFormula
         )}`}</InlineMath>
       </Text>
       <Text>
         Curl:{" "}
-        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getCurlThroughCircularSurface(
+        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getCurlThroughSphericalSurface(
           vectorFormula,
-          normalVector,
           radius,
-          circleFormula
+          sphereFormula
         )}`}</InlineMath>
-      </Text>
-      <Text>
-        Line Integral:{" "}
-        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getLineIntegralCircle(
-          vectorFormula,
-          radius,
-          circleFormula
-        )}`}</InlineMath> */}
       </Text>
     </VStack>
   );
@@ -800,7 +784,7 @@ const CubeOptions = () => {
   const center_z = cubeFormula.center_z || 0;
   const rotation_x = cubeFormula.rotation_x || 0;
   const rotation_y = cubeFormula.rotation_y || 0;
-  const rotation_z = cubeFormula.rotation_y || 0;
+  const rotation_z = cubeFormula.rotation_z || 0;
   useEffect(() => {
     const eulerAngles = new THREE.Euler(
       (rotation_x / 180) * Math.PI,
