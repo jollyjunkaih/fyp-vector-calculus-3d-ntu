@@ -54,12 +54,20 @@ export const FormulaInput = ({ vector, vectorFormula, setVectorFormula }) => {
       <Text>Type the formula for {vector}</Text>
       <Input
         onChange={(val) => {
-          if (vector === "i") {
-            setVectorFormula({ ...vectorFormula, i: val.target.value });
-          } else if (vector === "j") {
-            setVectorFormula({ ...vectorFormula, j: val.target.value });
-          } else if (vector === "k") {
-            setVectorFormula({ ...vectorFormula, k: val.target.value });
+          if (!val) {
+            return;
+          }
+          try {
+            nerdamer.convertToLaTeX(val);
+            if (vector === "i") {
+              setVectorFormula({ ...vectorFormula, i: val.target.value });
+            } else if (vector === "j") {
+              setVectorFormula({ ...vectorFormula, j: val.target.value });
+            } else if (vector === "k") {
+              setVectorFormula({ ...vectorFormula, k: val.target.value });
+            }
+          } catch (e) {
+            console.log(e);
           }
         }}
       />
@@ -105,19 +113,20 @@ export const ShapeButton = ({ shapeText }) => {
 const CenterInput = ({ vector, value }) => {
   const { shape, setShape } = useContext(PlaygroundStoreContext);
   return (
-    <InputGroup width={"20%"}>
-      <Input
-        type='number'
+    <HStack width={"25%"} position={"relative"}>
+      <NumberInput
+        size={"sm"}
+        width={"100%"}
         value={value || 0}
-        onChange={(event) => {
-          if (event.target.value != "" && event.target.value !== "-") {
+        onChange={(val) => {
+          if (val != "" && val !== "-") {
             if (vector === "i") {
               if (shape.shapeType === "Circle") {
                 setShape({
                   ...shape,
                   circleFormula: {
                     ...shape.circleFormula,
-                    center_x: parseInt(event.target.value),
+                    center_x: parseInt(val),
                   },
                 });
               } else if (shape.shapeType === "Square") {
@@ -125,7 +134,7 @@ const CenterInput = ({ vector, value }) => {
                   ...shape,
                   squareFormula: {
                     ...shape.squareFormula,
-                    center_x: parseInt(event.target.value),
+                    center_x: parseInt(val),
                   },
                 });
               } else if (shape.shapeType === "Sphere") {
@@ -133,7 +142,7 @@ const CenterInput = ({ vector, value }) => {
                   ...shape,
                   sphereFormula: {
                     ...shape.sphereFormula,
-                    center_x: parseInt(event.target.value),
+                    center_x: parseInt(val),
                   },
                 });
               } else if (shape.shapeType === "Cube") {
@@ -141,7 +150,7 @@ const CenterInput = ({ vector, value }) => {
                   ...shape,
                   cubeFormula: {
                     ...shape.cubeFormula,
-                    center_x: parseInt(event.target.value),
+                    center_x: parseInt(val),
                   },
                 });
               }
@@ -151,7 +160,7 @@ const CenterInput = ({ vector, value }) => {
                   ...shape,
                   circleFormula: {
                     ...shape.circleFormula,
-                    center_y: parseInt(event.target.value),
+                    center_y: parseInt(val),
                   },
                 });
               } else if (shape.shapeType === "Square") {
@@ -159,7 +168,7 @@ const CenterInput = ({ vector, value }) => {
                   ...shape,
                   squareFormula: {
                     ...shape.squareFormula,
-                    center_y: parseInt(event.target.value),
+                    center_y: parseInt(val),
                   },
                 });
               } else if (shape.shapeType === "Sphere") {
@@ -167,7 +176,7 @@ const CenterInput = ({ vector, value }) => {
                   ...shape,
                   sphereFormula: {
                     ...shape.sphereFormula,
-                    center_y: parseInt(event.target.value),
+                    center_y: parseInt(val),
                   },
                 });
               } else if (shape.shapeType === "Cube") {
@@ -175,7 +184,7 @@ const CenterInput = ({ vector, value }) => {
                   ...shape,
                   cubeFormula: {
                     ...shape.cubeFormula,
-                    center_y: parseInt(event.target.value),
+                    center_y: parseInt(val),
                   },
                 });
               }
@@ -185,7 +194,7 @@ const CenterInput = ({ vector, value }) => {
                   ...shape,
                   circleFormula: {
                     ...shape.circleFormula,
-                    center_z: parseInt(event.target.value),
+                    center_z: parseInt(val),
                   },
                 });
               } else if (shape.shapeType === "Square") {
@@ -193,7 +202,7 @@ const CenterInput = ({ vector, value }) => {
                   ...shape,
                   squareFormula: {
                     ...shape.squareFormula,
-                    center_z: parseInt(event.target.value),
+                    center_z: parseInt(val),
                   },
                 });
               } else if (shape.shapeType === "Sphere") {
@@ -201,7 +210,7 @@ const CenterInput = ({ vector, value }) => {
                   ...shape,
                   sphereFormula: {
                     ...shape.sphereFormula,
-                    center_z: parseInt(event.target.value),
+                    center_z: parseInt(val),
                   },
                 });
               } else if (shape.shapeType === "Cube") {
@@ -209,16 +218,38 @@ const CenterInput = ({ vector, value }) => {
                   ...shape,
                   cubeFormula: {
                     ...shape.cubeFormula,
-                    center_z: parseInt(event.target.value),
+                    center_z: parseInt(val),
                   },
                 });
               }
             }
           }
         }}
-      />
-      <InputRightElement children={<Vector text={vector} />} />
-    </InputGroup>
+        min={-5}
+        max={5}
+      >
+        <NumberInputField />
+        <NumberInputStepper>
+          <NumberIncrementStepper />
+          <NumberDecrementStepper />
+        </NumberInputStepper>
+      </NumberInput>
+      <Container
+        position={"absolute"}
+        width={0}
+        bottom={"3px"}
+        right={"25px"}
+        display={"inline"}
+      >
+        <Vector text={vector} />
+      </Container>
+    </HStack>
+    //   <Input
+    //     type='number'
+    //     value={value || 0}
+
+    //   />
+    //
   );
 };
 
@@ -569,8 +600,45 @@ const SquareOptions = () => {
     );
     const v3 = new THREE.Vector3(0, 1, 0);
     v3.applyEuler(eulerAngles);
-
     setNormalVector(v3);
+    //getting boundary of square
+    const vec1 = new THREE.Vector3(1, 0, 1);
+    const vec2 = new THREE.Vector3(1, 0, -1);
+    const vec3 = new THREE.Vector3(-1, 0, -1);
+    const vec4 = new THREE.Vector3(-1, 0, 1);
+    vec1.applyEuler(eulerAngles);
+    vec2.applyEuler(eulerAngles);
+    vec3.applyEuler(eulerAngles);
+    vec4.applyEuler(eulerAngles);
+    const vertices_x = [0, 0, 0, 0];
+    const vertices_y = [0, 0, 0, 0];
+    const vertices_z = [0, 0, 0, 0];
+    for (let i = 1; i <= 4; i++) {
+      vertices_x.push(vec1.x);
+      vertices_x.push(vec2.x);
+      vertices_x.push(vec3.x);
+      vertices_x.push(vec4.x);
+      vertices_y.push(vec1.y);
+      vertices_y.push(vec2.y);
+      vertices_y.push(vec3.y);
+      vertices_y.push(vec4.y);
+      vertices_z.push(vec1.z);
+      vertices_z.push(vec2.z);
+      vertices_z.push(vec3.z);
+      vertices_z.push(vec4.z);
+    }
+    setShape({
+      ...shape,
+      squareFormula: {
+        ...squareFormula,
+        max_X: parseFloat(Math.max(...vertices_x).toFixed(2)),
+        max_Y: parseFloat(Math.max(...vertices_y).toFixed(2)),
+        max_Z: parseFloat(Math.max(...vertices_z).toFixed(2)),
+        min_X: parseFloat(Math.min(...vertices_x).toFixed(2)),
+        min_Y: parseFloat(Math.min(...vertices_y).toFixed(2)),
+        min_Z: parseFloat(Math.min(...vertices_z).toFixed(2)),
+      },
+    });
   }, [rotation_x, rotation_y, rotation_z]);
   useEffect(() => {
     setSquareEquation(
@@ -671,9 +739,8 @@ const SquareOptions = () => {
       </Text>
       <Text>
         Line Integral:{" "}
-        <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getLineIntegralSquare(
+        <InlineMath>{`\\oint f \\cdot d \\widehat{r} = ${getLineIntegralSquare(
           vectorFormula,
-          length,
           squareFormula
         )}`}</InlineMath>
       </Text>

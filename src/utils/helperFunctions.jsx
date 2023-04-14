@@ -265,13 +265,11 @@ export const getLineIntegralCircle = (
       diff = nerdamer(diff).sub("r", radius.toString()).toString();
       diffCircleFormula.push(diff);
     }
-    console.log(diffCircleFormula);
     const vectorFieldAtRadius = nerdamer(
       `${X}*(${diffCircleFormula[0]})+${Y}*(${diffCircleFormula[1]})+${Z}*(${diffCircleFormula[2]})`
     )
       .evaluate()
       .toString();
-    console.log(vectorFieldAtRadius);
     const equationWRT0 = nerdamer(vectorFieldAtRadius)
       .sub("x", x)
       .sub("y", y)
@@ -279,7 +277,6 @@ export const getLineIntegralCircle = (
       .sub("r", radius.toString())
       .evaluate()
       .text("decimals", 3);
-    console.log(equationWRT0);
     let finalValues = 0;
     for (let degree = 15; degree <= 360; degree = degree + 15) {
       const lineIntegral = nerdamer(equationWRT0)
@@ -410,14 +407,224 @@ export const getCubeEquation = () => {
   return "";
 };
 
-export const getFluxThroughSquareSurface = () => {
-  return -2.45;
+export const getFluxThroughSquareSurface = (
+  vectorFormula,
+  normal,
+  length,
+  squareFormula
+) => {
+  const {
+    min_X,
+    min_Y,
+    min_Z,
+    max_X,
+    max_Y,
+    max_Z,
+    center_x,
+    center_y,
+    center_z,
+  } = squareFormula;
+  if (!(vectorFormula.i && vectorFormula.j && vectorFormula.k)) {
+    return 0;
+  }
+  try {
+    let finalValues = 0;
+
+    const dotProduct = nerdamer(
+      `dot([${vectorFormula.i},${vectorFormula.j},${vectorFormula.k}], [${normal.x},${normal.y},${normal.z}])`
+    )
+      .evaluate()
+      .toString();
+    for (
+      let x = min_X + parseInt(center_x || 0);
+      x <= max_X + parseInt(center_x || 0);
+      x = x + (max_X - min_X) / 4
+    ) {
+      for (
+        let y = min_Y + parseInt(center_y || 0);
+        y <= max_Y + parseInt(center_y || 0);
+        y = y + (max_Y - min_Y || 1) / 4
+      ) {
+        for (
+          let z = min_Z + parseInt(center_z || 0);
+          z <= max_Z + parseInt(center_z || 0);
+          z = z + (max_Z - min_Z) / 4
+        ) {
+          finalValues =
+            finalValues +
+            parseFloat(
+              nerdamer(dotProduct)
+                .sub("x", `${x}`)
+                .sub("y", `${y}`)
+                .sub("z", `${z}`)
+                .evaluate()
+                .text("decimals")
+            );
+        }
+      }
+    }
+    return ((finalValues / 64) * 2 * length * 2 * length).toFixed(2);
+  } catch (e) {
+    console.log(e);
+  }
 };
-export const getCurlThroughSquareSurface = () => {
-  return 5.5;
+export const getCurlThroughSquareSurface = (
+  vectorFormula,
+  normal,
+  length,
+  squareFormula
+) => {
+  const {
+    min_X,
+    min_Y,
+    min_Z,
+    max_X,
+    max_Y,
+    max_Z,
+    center_x,
+    center_y,
+    center_z,
+  } = squareFormula;
+
+  if (!(vectorFormula.i && vectorFormula.j && vectorFormula.k)) {
+    return 0;
+  }
+  try {
+    let finalValues = 0;
+    const { i: X, j: Y, k: Z } = vectorFormula;
+    const dZdy = nerdamer.diff(Z, "y", 1).toString();
+    const dYdz = nerdamer.diff(Y, "z", 1).toString();
+    const dXdz = nerdamer.diff(X, "z", 1).toString();
+    const dZdx = nerdamer.diff(Z, "x", 1).toString();
+    const dYdx = nerdamer.diff(Y, "x", 1).toString();
+    const dXdy = nerdamer.diff(X, "y", 1).toString();
+    const equation = `${normal.x}*(${dZdy}-${dYdz})+${normal.y}*(${dXdz}-${dZdx})+${normal.z}*(${dYdx}-${dXdy})`;
+    let counter = 0;
+    for (
+      let x = min_X + parseInt(center_x || 0);
+      x <= max_X + parseInt(center_x || 0);
+      x = x + (max_X - min_X) / 4
+    ) {
+      for (
+        let y = min_Y + parseInt(center_y || 0);
+        y <= max_Y + parseInt(center_y || 0);
+        y = y + (max_Y - min_Y || 1) / 4
+      ) {
+        for (
+          let z = min_Z + parseInt(center_z || 0);
+          z <= max_Z + parseInt(center_z || 0);
+          z = z + (max_Z - min_Z) / 4
+        ) {
+          counter = counter + 1;
+          finalValues =
+            finalValues +
+            parseFloat(
+              nerdamer(equation)
+                .sub("x", `${x}`)
+                .sub("y", `${y}`)
+                .sub("z", `${z}`)
+                .evaluate()
+                .text("decimals")
+            );
+        }
+      }
+    }
+    return ((finalValues / counter) * 2 * length * 2 * length).toFixed(2);
+  } catch (e) {
+    console.log(e);
+  }
 };
-export const getLineIntegralSquare = () => {
-  return 5.5;
+export const getLineIntegralSquare = (vectorFormula, squareFormula) => {
+  const {
+    center_x,
+    center_y,
+    center_z,
+    rotation_x,
+    rotation_y,
+    rotation_z,
+    length,
+  } = squareFormula;
+  if (!(vectorFormula.i && vectorFormula.j && vectorFormula.k)) {
+    return 0;
+  }
+
+  try {
+    const { i: X, j: Y, k: Z } = vectorFormula;
+    const newVectorFormula = { x: X, y: Y, z: Z };
+    let finalValues = 0;
+    console.log(squareFormula);
+    const vertice1 = new Vector3(
+      (length || 1) + (center_x || 0),
+      center_y || 0,
+      (length || 1) + (center_z || 0)
+    );
+    const vertice2 = new Vector3(
+      (length || 1) + (center_x || 0),
+      center_y || 0,
+      -(length || 1) + (center_z || 0)
+    );
+    const vertice3 = new Vector3(
+      -(length || 1) + (center_x || 0),
+      center_y || 0,
+      -(length || 1) + (center_z || 0)
+    );
+    const vertice4 = new Vector3(
+      -(length || 1) + (center_x || 0),
+      center_y || 0,
+      (length || 1) + (center_z || 0)
+    );
+    const eulerRotation = new Euler(
+      ((rotation_x || 0) * Math.PI) / 180,
+      ((rotation_y || 0) * Math.PI) / 180,
+      ((rotation_z || 0) * Math.PI) / 180
+    );
+    vertice1.applyEuler(eulerRotation);
+    vertice2.applyEuler(eulerRotation);
+    vertice3.applyEuler(eulerRotation);
+    vertice4.applyEuler(eulerRotation);
+    // console.log(vertice1, vertice2, vertice3, vertice4);
+
+    const line1 = new Vector3();
+    line1.add(vertice2).addScaledVector(vertice1, -1);
+    const line2 = new Vector3();
+    line2.add(vertice3).addScaledVector(vertice2, -1);
+    const line3 = new Vector3();
+    line3.add(vertice4).addScaledVector(vertice3, -1);
+    const line4 = new Vector3();
+    line4.add(vertice1).addScaledVector(vertice4, -1);
+    // console.log(line1, line2, line3, line4);
+
+    const steps = 10;
+    line1.divideScalar(steps);
+    line2.divideScalar(steps);
+    line3.divideScalar(steps);
+    line4.divideScalar(steps);
+
+    const lineList = [line1, line2, line3, line4];
+    const verticeList = [vertice1, vertice2, vertice3, vertice4];
+    console.log(lineList);
+    console.log(verticeList);
+    for (let i = 0; i < steps; i++) {
+      for (let v = 0; v < 4; v++) {
+        const point = new Vector3();
+        point.copy(verticeList[v]).addScaledVector(lineList[v], i);
+        for (const vector in newVectorFormula) {
+          let vectorAtPoint = nerdamer(newVectorFormula[vector])
+            .sub("x", point.x)
+            .sub("y", point.y)
+            .sub("z", point.z)
+            .evaluate()
+            .text("decimals");
+          vectorAtPoint = (parseFloat(vectorAtPoint) * lineList[v][vector]) / 4; //divide by four to get the average cos its already divided by 10 due to steps
+          finalValues = finalValues + vectorAtPoint;
+        }
+      }
+    }
+
+    return (finalValues * 2 * length).toFixed(2);
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const getFluxThroughSphericalSurface = () => {

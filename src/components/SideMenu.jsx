@@ -115,13 +115,6 @@ const SideMenu = () => {
               </AccordionButton>
               <AccordionPanel pb={4}>
                 <Divider marginBottom={5} borderColor={navBarColor} />
-                {/* {error ? ( */}
-                {/* <Text fontSize={"xs"} color='red'>
-                  While our Math Latex parser works for this equation,
-                  regretabbly, we are unable to parse it with our math engine,
-                  please try something else
-                </Text> */}
-                {/* ) : null} */}
                 <FormulaInput
                   vector={"i"}
                   vectorFormula={vectorFormula}
