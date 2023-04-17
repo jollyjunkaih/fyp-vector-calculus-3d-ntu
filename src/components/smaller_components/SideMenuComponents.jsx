@@ -739,10 +739,18 @@ const SquareOptions = () => {
       </Text>
       <Text>
         Line Integral:{" "}
-        <InlineMath>{`\\oint f \\cdot d \\widehat{r} = ${getLineIntegralSquare(
-          vectorFormula,
-          squareFormula
-        )}`}</InlineMath>
+        <InlineMath>{`\\oint f \\cdot d \\widehat{r} = ${
+          getCurlThroughSquareSurface(
+            vectorFormula,
+            normalVector,
+            length,
+            squareFormula
+          )
+          //   getLineIntegralSquare(
+          //   vectorFormula,
+          //   squareFormula
+          // )
+        }`}</InlineMath>
       </Text>
     </VStack>
   );
@@ -821,18 +829,16 @@ const SphereOptions = () => {
         Flux:{" "}
         <InlineMath>{`\\iint_S f \\cdot\\widehat{n}\\cdot dA = ${getFluxThroughSphericalSurface(
           vectorFormula,
-          radius,
           sphereFormula
         )}`}</InlineMath>
       </Text>
-      <Text>
+      {/* <Text>
         Curl:{" "}
         <InlineMath>{`\\iint_S \\nabla \\times f \\cdot\\widehat{n}\\cdot dA = ${getCurlThroughSphericalSurface(
           vectorFormula,
-          radius,
           sphereFormula
         )}`}</InlineMath>
-      </Text>
+      </Text> */}
     </VStack>
   );
 };

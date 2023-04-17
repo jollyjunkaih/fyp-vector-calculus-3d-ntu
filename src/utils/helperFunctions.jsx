@@ -29,16 +29,18 @@ export function getGradient(vectorFormula, x, y, z, general = false) {
 export function getDivergence(vectorFormula, x, y, z, general = false) {
   try {
     const gradientX = nerdamer.diff(vectorFormula.i, "x", 1);
-    const X = nerdamer(gradientX.toString(), { x: x, y: y, z: z }).toString();
     const gradientY = nerdamer.diff(vectorFormula.j, "y", 1);
-    const Y = nerdamer(gradientY.toString(), { x: x, y: y, z: z }).toString();
     const gradientZ = nerdamer.diff(vectorFormula.k, "z", 1);
-    const Z = nerdamer(gradientZ.toString(), { x: x, y: y, z: z }).toString();
     if (general) {
       return nerdamer(gradientX + "+" + gradientY + "+" + gradientZ)
         .evaluate()
         .toString();
-    } else return parseFloat(X) + parseFloat(Y) + parseFloat(Z);
+    } else {
+      const X = nerdamer(gradientX.toString(), { x: x, y: y, z: z }).toString();
+      const Y = nerdamer(gradientY.toString(), { x: x, y: y, z: z }).toString();
+      const Z = nerdamer(gradientZ.toString(), { x: x, y: y, z: z }).toString();
+      return parseFloat(X) + parseFloat(Y) + parseFloat(Z);
+    }
   } catch (e) {}
 }
 
@@ -552,7 +554,6 @@ export const getLineIntegralSquare = (vectorFormula, squareFormula) => {
     const { i: X, j: Y, k: Z } = vectorFormula;
     const newVectorFormula = { x: X, y: Y, z: Z };
     let finalValues = 0;
-    console.log(squareFormula);
     const vertice1 = new Vector3(
       (length || 1) + (center_x || 0),
       center_y || 0,
@@ -602,8 +603,7 @@ export const getLineIntegralSquare = (vectorFormula, squareFormula) => {
 
     const lineList = [line1, line2, line3, line4];
     const verticeList = [vertice1, vertice2, vertice3, vertice4];
-    console.log(lineList);
-    console.log(verticeList);
+
     for (let i = 0; i < steps; i++) {
       for (let v = 0; v < 4; v++) {
         const point = new Vector3();
@@ -620,16 +620,59 @@ export const getLineIntegralSquare = (vectorFormula, squareFormula) => {
         }
       }
     }
-
-    return (finalValues * 2 * length).toFixed(2);
+    return parseFloat((finalValues * 2 * (length || 1)).toFixed(2));
   } catch (e) {
     console.log(e);
   }
 };
 
-export const getFluxThroughSphericalSurface = () => {
-  return 10.2;
+export const getFluxThroughSphericalSurface = (
+  vectorFormula,
+  sphereFormula
+) => {
+  const { radius, center_x, center_y, center_z } = sphereFormula;
+  const divergence = getDivergence(vectorFormula, "", "", "", true);
+  console.log("start");
+  const minY = (center_y || 0) - (radius || 1);
+  const maxY = (center_y || 0) + (radius || 1);
+  let finalValues = 0;
+  for (let y = minY + 0.1; y < maxY; y = y + (2 * (radius || 1)) / 10) {
+    const r = radius || 1 - Math.pow(y - (center_y || 0), 2);
+    console.log(r);
+    const formulaWRTθandR = nerdamer(divergence)
+      .sub("x", `r*cos(θ)+(${center_x || 0})`)
+      .sub("y", `${y}`)
+      .sub("z", `r*sin(θ)+(${center_z || 0})`)
+      .toString();
+    let firstIntegral = nerdamer(
+      `integrate(${formulaWRTθandR.toString()},θ)`
+    ).toString();
+    const firstIntegral_0 = nerdamer(firstIntegral).sub("θ", "0").toString();
+    const firstIntegral_2pi = nerdamer(firstIntegral).sub("θ", "2π").toString();
+    firstIntegral = firstIntegral_2pi + "-" + firstIntegral_0;
+    console.log(firstIntegral);
+    const secondIntegral = nerdamer(
+      `defint(${nerdamer(firstIntegral)
+        .evaluate()
+        .toString()},0,${r.toString()},r)`
+    )
+      .evaluate()
+      .text("decimals", 3);
+    console.log(secondIntegral);
+    finalValues =
+      finalValues + parseFloat(secondIntegral) / Math.PI / Math.pow(r, 2);
+  }
+
+  return (
+    (finalValues / 10) *
+    1.333333 *
+    Math.PI *
+    Math.pow(radius || 1, 3)
+  ).toFixed(2);
 };
-export const getCurlThroughSphericalSurface = () => {
+export const getCurlThroughSphericalSurface = (
+  vectorFormula,
+  sphereFormula
+) => {
   return 2.3;
 };
