@@ -1,6 +1,6 @@
 import { useThree, extend, useFrame } from "@react-three/fiber";
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { OrbitControls, TransformControls } from "@react-three/drei";
 import { buttonColor } from "../styles/Colours";
 import {
   VStack,
@@ -24,15 +24,12 @@ import { LessonStoreContext } from "../context/lessonStore";
 import { useFormula } from "../utils/helperFunctions";
 import * as THREE from "three";
 
-extend({ OrbitControls });
-
 export const ScalarFieldVisual = () => {
   const { scalarValues, gridSize } = useContext(LessonStoreContext);
-  const { camera, gl } = useThree();
 
   return (
     <>
-      <orbitControls args={[camera, gl.domElement]} />
+      <OrbitControls />
       <directionalLight position={[1, 2, 3]} intensity={1.5} />
       <ambientLight intensity={0.5} />
       <Axes gridSize={gridSize} />
@@ -186,10 +183,9 @@ export const VectorFieldFormulaDisplay = () => {
 export const VectorFieldVisual = () => {
   const { vectorFieldData, gridSize, vectorFieldFormula } =
     useContext(LessonStoreContext);
-  const { camera, gl } = useThree();
   return (
     <>
-      <orbitControls args={[camera, gl.domElement]} />
+      <OrbitControls />
       <directionalLight position={[1, 2, 3]} intensity={1.5} />
       <ambientLight intensity={0.5} />
       <Axes gridSize={gridSize} />
@@ -218,7 +214,6 @@ export const VectorFieldVisual = () => {
 export const DivergenceVisual = () => {
   const { divergenceData, setDivergenceData, gridSize } =
     useContext(LessonStoreContext);
-  const { camera, gl } = useThree();
   const [grid, setGrid] = useState([]);
   const shapeRef = useRef();
   useEffect(() => {
@@ -254,7 +249,7 @@ export const DivergenceVisual = () => {
   }, [divergenceData.rotation_x, divergenceData.rotation_z]);
   return (
     <>
-      <orbitControls args={[camera, gl.domElement]} />
+      <OrbitControls />
       <directionalLight position={[1, 2, 3]} intensity={1.5} />
       <ambientLight intensity={0.5} />
       <Axes gridSize={gridSize} />
@@ -313,6 +308,101 @@ export const DivergenceVisual = () => {
       })}
     </>
   );
+};
+
+export const CurlVisual = () => {
+  const { curlVectorFieldData, gridSize, curlVectorFieldFormula, texture } =
+    useContext(LessonStoreContext);
+  const sphere = useRef();
+  const { camera, gl } = useThree();
+  return (
+    <>
+      <OrbitControls />
+      <directionalLight position={[1, 2, 3]} intensity={1.5} />
+      <ambientLight intensity={0.5} />
+      <Axes gridSize={gridSize} />
+
+      {/* {curlVectorFieldData.length ? (
+        <>
+          <TransformControls object={sphere} />
+          <mesh ref={sphere}>
+            <sphereGeometry />
+            <meshStandardMaterial />
+          </mesh>
+        </>
+      ) : null} */}
+      {curlVectorFieldData.map((data) => {
+        const { x, y, z, i, j, k } = data;
+        return (
+          <mesh position={[x, y, z]} key={JSON.stringify(data)}>
+            <ArrowMesh
+              vectorFormula={curlVectorFieldFormula}
+              x={x}
+              y={y}
+              z={z}
+              i={i}
+              j={j}
+              k={k}
+              playground={false}
+              curl={true}
+              texture={texture}
+            />
+          </mesh>
+        );
+      })}
+    </>
+  );
+};
+export const CurlFormulaDisplay = () => {
+  const { curlVectorFieldFormula, gridSize, setCurlVectorFieldData } =
+    useContext(LessonStoreContext);
+  const onUpdate = () => {
+    try {
+      if (
+        curlVectorFieldFormula.i &&
+        curlVectorFieldFormula.j &&
+        curlVectorFieldFormula.k
+      ) {
+        const newValueList = [];
+        for (let x = -gridSize / 2; x < gridSize / 2 + 1; x++) {
+          for (let y = -gridSize / 2; y < gridSize / 2 + 1; y++) {
+            for (let z = -gridSize / 2; z < gridSize / 2 + 1; z++) {
+              newValueList.push({
+                i: useFormula(x, y, z, curlVectorFieldFormula.i),
+                j: useFormula(x, y, z, curlVectorFieldFormula.j),
+                k: useFormula(x, y, z, curlVectorFieldFormula.k),
+                x: x,
+                y: y,
+                z: z,
+              });
+            }
+          }
+        }
+        setCurlVectorFieldData(newValueList);
+      }
+    } catch (e) {
+      console.log(e);
+      setCurlVectorFieldData([]);
+    }
+  };
+  try {
+    return (
+      <>
+        <FormulaDisplay vectorFormula={curlVectorFieldFormula} />
+        <Button
+          marginTop={2}
+          width={"fit-content"}
+          onClick={onUpdate}
+          color={buttonColor}
+        >
+          Generate
+        </Button>
+      </>
+    );
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
 };
 
 export const RotationSlider = ({ text, value, state, setState }) => {

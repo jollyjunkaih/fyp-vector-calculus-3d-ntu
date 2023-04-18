@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-
+import * as THREE from "three";
 export const LessonStoreContext = createContext();
 
 export const LessonStoreProvider = ({ children }) => {
@@ -13,6 +13,11 @@ export const LessonStoreProvider = ({ children }) => {
     j: "",
     k: "",
   });
+  const [curlVectorFieldFormula, setCurlVectorFieldFormula] = useState({
+    i: "",
+    j: "",
+    k: "",
+  });
   const [divergenceData, setDivergenceData] = useState({
     direction: "X",
     rotation_x: 0,
@@ -20,7 +25,12 @@ export const LessonStoreProvider = ({ children }) => {
     normal: "",
   });
   const [vectorFieldData, setVectorFieldData] = useState([]);
+  const [curlVectorFieldData, setCurlVectorFieldData] = useState([]);
   const gridSize = 6;
+  const textureLoader = new THREE.TextureLoader();
+  const texture = textureLoader.load(
+    "../assets/fabric_pattern_07_col_1_1k.png"
+  );
 
   return (
     <LessonStoreContext.Provider
@@ -42,6 +52,11 @@ export const LessonStoreProvider = ({ children }) => {
         setVectorFieldData,
         divergenceData,
         setDivergenceData,
+        curlVectorFieldFormula,
+        setCurlVectorFieldFormula,
+        curlVectorFieldData,
+        setCurlVectorFieldData,
+        texture,
       }}
     >
       {children}

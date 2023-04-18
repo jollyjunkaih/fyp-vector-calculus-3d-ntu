@@ -240,3 +240,75 @@ export const PartialDerivativesText = () => {
     </>
   );
 };
+
+export const CurlText = () => {
+  return (
+    <>
+      <Heading>Curl</Heading>
+      <Body>
+        In mathematics, partial derivatives are a way to measure how a function
+        changes with respect to one of its variables, while holding all other
+        variables constant. They are denoted by the symbol{" "}
+        <InlineMath>{"\\partial"}</InlineMath> and can be thought of as the
+        "instantaneous rate of change" of a function with respect to a
+        particular variable. For example, if we have a function{" "}
+        <InlineMath>f(x,y)</InlineMath> that takes two variables and we want to
+        find the partial derivative of <InlineMath>f</InlineMath> with respect
+        to <InlineMath>x</InlineMath> , we would write:{" "}
+        <InlineMath>{`\\frac{\\partial f}{\\partial x}`}</InlineMath> This tells
+        us how much <InlineMath>f</InlineMath>
+        changes for a small change in <InlineMath>x</InlineMath> , while keeping{" "}
+        <InlineMath>y</InlineMath> constant. Similarly, if we wanted to find the
+        partial derivative of <InlineMath>f</InlineMath> with respect to{" "}
+        <InlineMath>y</InlineMath> , we would write:{" "}
+        <InlineMath>{`\\frac{\\partial f}{\\partial y}`}</InlineMath>
+        <br />
+        <br />
+        Watch Sal Khan explain the graphical meaning of partial derivatives{" "}
+        <Link
+          color={externalLink}
+          isExternal
+          href='https://www.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/partial-derivatives/v/partial-derivatives-and-graphs'
+        >
+          here
+        </Link>
+      </Body>
+    </>
+  );
+};
+
+export const DivergenceText = () => {
+  return (
+    <>
+      <Heading>Divergence</Heading>
+      <Body>
+        In mathematics, partial derivatives are a way to measure how a function
+        changes with respect to one of its variables, while holding all other
+        variables constant. They are denoted by the symbol{" "}
+        <InlineMath>{"\\partial"}</InlineMath> and can be thought of as the
+        "instantaneous rate of change" of a function with respect to a
+        particular variable. For example, if we have a function{" "}
+        <InlineMath>f(x,y)</InlineMath> that takes two variables and we want to
+        find the partial derivative of <InlineMath>f</InlineMath> with respect
+        to <InlineMath>x</InlineMath> , we would write:{" "}
+        <InlineMath>{`\\frac{\\partial f}{\\partial x}`}</InlineMath> This tells
+        us how much <InlineMath>f</InlineMath>
+        changes for a small change in <InlineMath>x</InlineMath> , while keeping{" "}
+        <InlineMath>y</InlineMath> constant. Similarly, if we wanted to find the
+        partial derivative of <InlineMath>f</InlineMath> with respect to{" "}
+        <InlineMath>y</InlineMath> , we would write:{" "}
+        <InlineMath>{`\\frac{\\partial f}{\\partial y}`}</InlineMath>
+        <br />
+        <br />
+        Watch Sal Khan explain the graphical meaning of partial derivatives{" "}
+        <Link
+          color={externalLink}
+          isExternal
+          href='https://www.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/partial-derivatives/v/partial-derivatives-and-graphs'
+        >
+          here
+        </Link>
+      </Body>
+    </>
+  );
+};

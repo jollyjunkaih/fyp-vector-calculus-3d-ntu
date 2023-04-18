@@ -28,6 +28,8 @@ import {
   VectorFieldVisual,
   DivergenceVisual,
   RotationSlider,
+  CurlVisual,
+  CurlFormulaDisplay,
 } from "../components/LessonComponents";
 import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
@@ -46,6 +48,8 @@ import {
   VectorFieldText,
   VectorsAndCalculusText,
   PartialDerivativesText,
+  CurlText,
+  DivergenceText,
 } from "../components/smaller_components/LessonTexts";
 
 export const LessonPage = () => {
@@ -84,7 +88,7 @@ export const LessonPage = () => {
           <Heading>Gradient and Directional Derivatives</Heading>
 
           <Divergence />
-          <Heading>Curl</Heading>
+          <Curl />
           <Heading>Laplacian</Heading>
           <Heading>Single, Double and Triple Integrals</Heading>
           <Heading>Line Integrals in Vector Fields</Heading>
@@ -369,6 +373,82 @@ const Divergence = () => {
           <InlineMath>{`\\widehat{n} = ${divergenceData.normal}`}</InlineMath>
           <Text>Divergence</Text>
           <InlineMath>{`\\nabla \\cdot F \\cdot \\widehat{n} = HARD CODE`}</InlineMath>
+        </VStack>
+      </HStack>
+    </>
+  );
+};
+
+const Curl = () => {
+  const { setCurlVectorFieldFormula, curlVectorFieldFormula } =
+    useContext(LessonStoreContext);
+  return (
+    <>
+      <CurlText />
+      <HStack
+        alignSelf={"center"}
+        width={"85%"}
+        minHeight={600}
+        borderWidth={2}
+        borderRadius={10}
+        borderColor={navBarColor}
+      >
+        <Box width={"65%"} height={"100%"}>
+          <Canvas
+            gl={{
+              antialias: true,
+              toneMapping: THREE.ACESFilmicToneMapping,
+              outputEncoding: THREE.sRGBEncoding,
+            }}
+            camera={{
+              fov: 45,
+              near: 0.1,
+              far: 200,
+              position: [9, 5, 12],
+            }}
+          >
+            <CurlVisual />
+          </Canvas>
+        </Box>
+        <Divider
+          borderColor={navBarColor}
+          paddingRight={5}
+          height={"90%"}
+          orientation='vertical'
+        />
+        <VStack width={"30%"} alignItems={"start"}>
+          <Text a>Type the formula for i</Text>
+          <Input
+            width={"90%"}
+            onChange={(val) => {
+              setCurlVectorFieldFormula({
+                ...curlVectorFieldFormula,
+                i: val.target.value,
+              });
+            }}
+          />
+          <Text a>Type the formula for j</Text>
+          <Input
+            width={"90%"}
+            onChange={(val) => {
+              setCurlVectorFieldFormula({
+                ...curlVectorFieldFormula,
+                j: val.target.value,
+              });
+            }}
+          />
+          <Text a>Type the formula for k</Text>
+          <Input
+            width={"90%"}
+            onChange={(val) => {
+              setCurlVectorFieldFormula({
+                ...curlVectorFieldFormula,
+                k: val.target.value,
+              });
+            }}
+          />
+          <br />
+          <CurlFormulaDisplay />
         </VStack>
       </HStack>
     </>

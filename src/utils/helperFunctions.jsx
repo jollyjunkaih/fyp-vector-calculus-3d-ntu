@@ -46,7 +46,7 @@ export function getDivergence(vectorFormula, x, y, z, general = false) {
 
 //X,Y,Z are the coeffecients of the unit vectors; x,y,z represent the partial derivatives
 // so curl = (Zy-Yz)i + (Xz-Zx)j + (Yx-Xy)k
-export function getCurl(vectorFormula, x, y, z, general = false) {
+export function getCurl(vectorFormula, x, y, z, general) {
   try {
     const Zy = nerdamer.diff(vectorFormula.k, "y", 1).toString();
     const Yz = nerdamer.diff(vectorFormula.j, "z", 1).toString();
@@ -583,7 +583,6 @@ export const getLineIntegralSquare = (vectorFormula, squareFormula) => {
     vertice2.applyEuler(eulerRotation);
     vertice3.applyEuler(eulerRotation);
     vertice4.applyEuler(eulerRotation);
-    // console.log(vertice1, vertice2, vertice3, vertice4);
 
     const line1 = new Vector3();
     line1.add(vertice2).addScaledVector(vertice1, -1);
@@ -593,7 +592,6 @@ export const getLineIntegralSquare = (vectorFormula, squareFormula) => {
     line3.add(vertice4).addScaledVector(vertice3, -1);
     const line4 = new Vector3();
     line4.add(vertice1).addScaledVector(vertice4, -1);
-    // console.log(line1, line2, line3, line4);
 
     const steps = 10;
     line1.divideScalar(steps);
@@ -632,13 +630,11 @@ export const getFluxThroughSphericalSurface = (
 ) => {
   const { radius, center_x, center_y, center_z } = sphereFormula;
   const divergence = getDivergence(vectorFormula, "", "", "", true);
-  console.log("start");
   const minY = (center_y || 0) - (radius || 1);
   const maxY = (center_y || 0) + (radius || 1);
   let finalValues = 0;
   for (let y = minY + 0.1; y < maxY; y = y + (2 * (radius || 1)) / 10) {
     const r = radius || 1 - Math.pow(y - (center_y || 0), 2);
-    console.log(r);
     const formulaWRTθandR = nerdamer(divergence)
       .sub("x", `r*cos(θ)+(${center_x || 0})`)
       .sub("y", `${y}`)
@@ -650,7 +646,6 @@ export const getFluxThroughSphericalSurface = (
     const firstIntegral_0 = nerdamer(firstIntegral).sub("θ", "0").toString();
     const firstIntegral_2pi = nerdamer(firstIntegral).sub("θ", "2π").toString();
     firstIntegral = firstIntegral_2pi + "-" + firstIntegral_0;
-    console.log(firstIntegral);
     const secondIntegral = nerdamer(
       `defint(${nerdamer(firstIntegral)
         .evaluate()
@@ -658,7 +653,6 @@ export const getFluxThroughSphericalSurface = (
     )
       .evaluate()
       .text("decimals", 3);
-    console.log(secondIntegral);
     finalValues =
       finalValues + parseFloat(secondIntegral) / Math.PI / Math.pow(r, 2);
   }
