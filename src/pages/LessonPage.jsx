@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   VStack,
   HStack,
@@ -30,6 +30,7 @@ import {
   RotationSlider,
   CurlVisual,
   CurlFormulaDisplay,
+  YouTubeVideo,
 } from "../components/LessonComponents";
 import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
@@ -50,6 +51,15 @@ import {
   PartialDerivativesText,
   CurlText,
   DivergenceText,
+  GradientAndDirectionalDerivativesText,
+  LaplacianText,
+  SingleDoubleTripleIntegralsText,
+  LineIntegralsInVectorFieldsText,
+  SurfaceIntegralsInVectorFieldsText,
+  FluxInVectorFieldsText,
+  GreensTheoremText,
+  DivergenceTheoremText,
+  StokesTheoremText,
 } from "../components/smaller_components/LessonTexts";
 
 export const LessonPage = () => {
@@ -85,18 +95,17 @@ export const LessonPage = () => {
           <ScalarField />
           <VectorField />
           <PartialDerivatives />
-          <Heading>Gradient and Directional Derivatives</Heading>
-
+          <GradientAndDirectionalDerivatives />
           <Divergence />
           <Curl />
-          <Heading>Laplacian</Heading>
-          <Heading>Single, Double and Triple Integrals</Heading>
-          <Heading>Line Integrals in Vector Fields</Heading>
-          <Heading>Surface Integrals in Vector Fields</Heading>
-          <Heading>Flux in Vector Fields</Heading>
-          <Heading>Green's Theorem</Heading>
-          <Heading>Divergence Theorem</Heading>
-          <Heading>Stoke's Theorem</Heading>
+          <Laplacian />
+          <SingleDoubleTripleIntegrals />
+          <LineIntegralsInVectorFields />
+          <SurfaceIntegralsInVectorFields />
+          <FluxInVectorFields />
+          <GreensTheorem />
+          <DivergenceTheorem />
+          <StokesTheorem />
         </VStack>
       </HStack>
     </VStack>
@@ -108,11 +117,31 @@ const VectorsAndCalculus = () => {
     <>
       <VectorsAndCalculusText />
       <DotProductText />
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "KDHuWxy53uM",
+            caption: "Watch an explainer video by Khan Academy here",
+          },
+        ]}
+      />
       <CrossProductText />
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "eu6i7WJeinw",
+            caption: "Visualising Cross Product with 3Blue1Brown",
+          },
+          {
+            embedId: "E34CftP455k",
+            caption:
+              "Khan Academy explains the difference between Dot and Cross Product",
+          },
+        ]}
+      />
     </>
   );
 };
-
 const ScalarField = () => {
   const { setScalarFormula, scalarFormula } = useContext(LessonStoreContext);
   return (
@@ -236,6 +265,14 @@ const VectorField = () => {
           <VectorFieldFormulaDisplay />
         </VStack>
       </HStack>
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "5FWAVmwMXWg",
+            caption: "Introduction to Vector Fields by Khan Academy",
+          },
+        ]}
+      />
     </>
   );
 };
@@ -243,142 +280,59 @@ const PartialDerivatives = () => {
   return (
     <>
       <PartialDerivativesText />
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "5FWAVmwMXWg",
+            caption: "Khan Academy explains Partial Derivatives",
+          },
+          {
+            embedId: "dfvnCHqzK54",
+            caption: "Visualising Partial Derivatives with Khan Academy",
+          },
+        ]}
+      />
     </>
   );
 };
-
-const Divergence = () => {
-  const { divergenceData, setDivergenceData } = useContext(LessonStoreContext);
+const GradientAndDirectionalDerivatives = () => {
   return (
     <>
-      <Heading>Divergence</Heading>
-      <Body>
-        A vector field is a concept from physics that describes a quantity that
-        varies in space and has both magnitude and direction. In other words, it
-        is a function that assigns a vector (which has both magnitude and
-        direction) to every point in space.
-        <br />
-        <br />
-        Vector fields are used in a variety of areas of physics, including
-        classical mechanics, electromagnetism, and fluid dynamics. In classical
-        mechanics, examples of vector fields include the gravitational field and
-        the velocity field of a fluid. In electromagnetism, the electric and
-        magnetic fields are examples of vector fields.
-        <br />
-        <br />
-        Vector fields can be visualized by drawing arrows at each point in
-        space, with the direction and length of the arrows indicating the
-        direction and magnitude of the vector at that point.
-      </Body>
-      <SubHeading1>Divergence Intuition</SubHeading1>
-      <Body>
-        Feel free to play with the vector field visualiser. Based on your
-        formula for the vector at each coordinate <InlineMath>x, y </InlineMath>{" "}
-        and <InlineMath>z</InlineMath>. Hover over the vectors to see
-        information at each point. Try putting this
-        <Code>(i) z^2*x || (j) x*4+y^3 || (k) y*x*z </Code>
-      </Body>
-      <HStack
-        alignSelf={"center"}
-        width={"85%"}
-        minHeight={600}
-        borderWidth={2}
-        borderRadius={10}
-        borderColor={navBarColor}
-      >
-        <Box width={"65%"} height={"100%"}>
-          <Canvas
-            gl={{
-              antialias: true,
-              toneMapping: THREE.ACESFilmicToneMapping,
-              outputEncoding: THREE.sRGBEncoding,
-            }}
-            camera={{
-              fov: 45,
-              near: 0.1,
-              far: 200,
-              position: [9, 5, 12],
-            }}
-          >
-            <DivergenceVisual />
-          </Canvas>
-        </Box>
-        <Divider
-          borderColor={navBarColor}
-          paddingRight={5}
-          height={"90%"}
-          orientation='vertical'
-        />
-        <VStack width={"30%"} alignItems={"start"}>
-          <Text>Choose Vector Field Direction</Text>
-          <Text>Vector Field Equation</Text>
-          <InlineMath>{`F = 5${
-            divergenceData.direction === "X"
-              ? "i"
-              : divergenceData.direction === "Y"
-              ? "j"
-              : "k"
-          }`}</InlineMath>
-          <HStack width={"70%"} justifyContent={"space-between"}>
-            <Button
-              bgColor={
-                divergenceData.direction == "X"
-                  ? selectedButtonColor
-                  : buttonColor
-              }
-              onClick={() =>
-                setDivergenceData({ ...divergenceData, direction: "X" })
-              }
-            >
-              X
-            </Button>
-            <Button
-              bgColor={
-                divergenceData.direction == "Y"
-                  ? selectedButtonColor
-                  : buttonColor
-              }
-              onClick={() =>
-                setDivergenceData({ ...divergenceData, direction: "Y" })
-              }
-            >
-              Y
-            </Button>
-            <Button
-              bgColor={
-                divergenceData.direction == "Z"
-                  ? selectedButtonColor
-                  : buttonColor
-              }
-              onClick={() =>
-                setDivergenceData({ ...divergenceData, direction: "Z" })
-              }
-            >
-              Z
-            </Button>
-          </HStack>
-          <RotationSlider
-            text={"x-axis"}
-            value={divergenceData.rotation_x}
-            state={divergenceData}
-            setState={setDivergenceData}
-          />
-          <RotationSlider
-            text={"z-axis"}
-            value={divergenceData.rotation_z}
-            state={divergenceData}
-            setState={setDivergenceData}
-          />
-          <Text>Normal Vector of Plane</Text>
-          <InlineMath>{`\\widehat{n} = ${divergenceData.normal}`}</InlineMath>
-          <Text>Divergence</Text>
-          <InlineMath>{`\\nabla \\cdot F \\cdot \\widehat{n} = HARD CODE`}</InlineMath>
-        </VStack>
-      </HStack>
+      <GradientAndDirectionalDerivativesText />
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "5FWAVmwMXWg",
+            caption: "Khan Academy explains Partial Derivatives",
+          },
+          {
+            embedId: "dfvnCHqzK54",
+            caption: "Visualising Partial Derivatives with Khan Academy",
+          },
+        ]}
+      />
     </>
   );
 };
-
+const Divergence = () => {
+  return (
+    <>
+      <DivergenceText />
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "c0MR-vWiUPU",
+            caption: "Khan Academy explains Divergence part 1",
+          },
+          {
+            embedId: "Yeie-aJT2eU",
+            caption: "Khan Academy explains Divergence part 1",
+          },
+        ]}
+      />
+    </>
+  );
+};
 const Curl = () => {
   const { setCurlVectorFieldFormula, curlVectorFieldFormula } =
     useContext(LessonStoreContext);
@@ -451,6 +405,282 @@ const Curl = () => {
           <CurlFormulaDisplay />
         </VStack>
       </HStack>
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "aDNyyTtaJdY",
+            caption: "Dr Trefor Bazett explains Curl",
+          },
+          {
+            embedId: "rB83DpBJQsE",
+            caption: "Divergence and Curl by 3Blue1Brown",
+          },
+        ]}
+      />
+    </>
+  );
+};
+const Laplacian = () => {
+  return (
+    <>
+      <LaplacianText />
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "EW08rD-GFh0",
+            caption: "Khan Academy explains the Laplacian",
+          },
+          {
+            embedId: "XbCvGRjjzgg",
+            caption: "Example of Laplacian Computation",
+          },
+        ]}
+      />
+    </>
+  );
+};
+const SingleDoubleTripleIntegrals = () => {
+  return (
+    <>
+      <SingleDoubleTripleIntegralsText />
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "85zGYB-34jQ",
+            caption: "Khan Academy explains the Double Integral",
+          },
+          {
+            embedId: "TdLD2Zh-nUQ",
+            caption: "Visualising the Double Integral",
+          },
+          {
+            embedId: "vr0sTKbV7lI",
+            caption: "Khan Academy explains the Triple Integral",
+          },
+          {
+            embedId: "vxQvL_WhBGU",
+            caption: "Visualising the Triple Integral",
+          },
+        ]}
+      />
+    </>
+  );
+};
+const LineIntegralsInVectorFields = () => {
+  return (
+    <>
+      <LineIntegralsInVectorFieldsText />
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "WA5_a3C2iqY",
+            caption: "Line Integral Intuition with Dr Trefor",
+          },
+        ]}
+      />
+    </>
+  );
+};
+const SurfaceIntegralsInVectorFields = () => {
+  return (
+    <>
+      <SurfaceIntegralsInVectorFieldsText />
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "9k97m8oWnaY",
+            caption: "Introduction to Surface Integrals",
+          },
+          {
+            embedId: "owKAHXf1y1A",
+            caption: "Parametrizing Surfaces",
+          },
+        ]}
+      />
+    </>
+  );
+};
+const FluxInVectorFields = () => {
+  const { divergenceData, setDivergenceData } = useContext(LessonStoreContext);
+  const [flux, setFlux] = useState(0);
+  useEffect(() => {
+    const eulerAngles = new THREE.Euler(
+      (divergenceData.rotation_x / 180) * Math.PI,
+      0,
+      (divergenceData.rotation_z / 180) * Math.PI
+    );
+    const nVector = new THREE.Vector3(0, 1, 0);
+    nVector.applyEuler(eulerAngles);
+    if (divergenceData.direction == "X") {
+      setFlux(5 * Math.PI * nVector.x);
+    } else if (divergenceData.direction == "Y") {
+      setFlux(5 * Math.PI * nVector.y);
+    } else if (divergenceData.direction == "Z") {
+      setFlux(5 * Math.PI * nVector.z);
+    }
+    console.log(divergenceData.normal);
+  }, [divergenceData.normal, divergenceData.direction]);
+  return (
+    <>
+      <FluxInVectorFieldsText />
+      <HStack
+        alignSelf={"center"}
+        width={"85%"}
+        minHeight={600}
+        borderWidth={2}
+        borderRadius={10}
+        borderColor={navBarColor}
+      >
+        <Box width={"65%"} height={"100%"}>
+          <Canvas
+            gl={{
+              antialias: true,
+              toneMapping: THREE.ACESFilmicToneMapping,
+              outputEncoding: THREE.sRGBEncoding,
+            }}
+            camera={{
+              fov: 45,
+              near: 0.1,
+              far: 200,
+              position: [9, 5, 12],
+            }}
+          >
+            <DivergenceVisual />
+          </Canvas>
+        </Box>
+        <Divider
+          borderColor={navBarColor}
+          paddingRight={5}
+          height={"90%"}
+          orientation='vertical'
+        />
+        <VStack width={"30%"} alignItems={"start"}>
+          <Text>Choose Vector Field Direction</Text>
+
+          <HStack width={"70%"} justifyContent={"space-between"}>
+            <Button
+              bgColor={
+                divergenceData.direction == "X"
+                  ? selectedButtonColor
+                  : buttonColor
+              }
+              onClick={() =>
+                setDivergenceData({ ...divergenceData, direction: "X" })
+              }
+            >
+              X
+            </Button>
+            <Button
+              bgColor={
+                divergenceData.direction == "Y"
+                  ? selectedButtonColor
+                  : buttonColor
+              }
+              onClick={() =>
+                setDivergenceData({ ...divergenceData, direction: "Y" })
+              }
+            >
+              Y
+            </Button>
+            <Button
+              bgColor={
+                divergenceData.direction == "Z"
+                  ? selectedButtonColor
+                  : buttonColor
+              }
+              onClick={() =>
+                setDivergenceData({ ...divergenceData, direction: "Z" })
+              }
+            >
+              Z
+            </Button>
+          </HStack>
+          <Text>Vector Field Equation</Text>
+          <InlineMath>{`F = 5${
+            divergenceData.direction === "X"
+              ? "i"
+              : divergenceData.direction === "Y"
+              ? "j"
+              : "k"
+          }`}</InlineMath>
+          <RotationSlider
+            text={"x-axis"}
+            value={divergenceData.rotation_x}
+            state={divergenceData}
+            setState={setDivergenceData}
+          />
+          <RotationSlider
+            text={"z-axis"}
+            value={divergenceData.rotation_z}
+            state={divergenceData}
+            setState={setDivergenceData}
+          />
+          <Text>Normal Vector of Plane</Text>
+          <InlineMath>{`\\widehat{n} = ${divergenceData.normal}`}</InlineMath>
+          <Text>Flux through the Surface</Text>
+          <InlineMath>{`\\nabla \\cdot F \\cdot \\widehat{n} = ${flux.toFixed(
+            2
+          )}`}</InlineMath>
+        </VStack>
+      </HStack>
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "ivg3dLTarbs",
+            caption: "The Concept Flux",
+          },
+          {
+            embedId: "sX9s0JiWATM",
+            caption: "Flux Integrals",
+          },
+        ]}
+      />
+    </>
+  );
+};
+const GreensTheorem = () => {
+  return (
+    <>
+      <GreensTheoremText />
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "JB99RbQAilI",
+            caption: "Green's Theorem, Curl and Circulation",
+          },
+        ]}
+      />
+    </>
+  );
+};
+const DivergenceTheorem = () => {
+  return (
+    <>
+      <DivergenceTheoremText />
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "pY4t-ikhzhU",
+            caption: "Intuition behind Divergence Theorem",
+          },
+        ]}
+      />
+    </>
+  );
+};
+const StokesTheorem = () => {
+  return (
+    <>
+      <StokesTheoremText />
+      <YouTubeVideo
+        videos={[
+          {
+            embedId: "0UvNF_cfBJ4",
+            caption: "Stoke's Theorem Intuition",
+          },
+        ]}
+      />
+      <br /> <br /> <br /> <br />
     </>
   );
 };

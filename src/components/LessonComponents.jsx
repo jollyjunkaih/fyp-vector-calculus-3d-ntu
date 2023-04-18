@@ -1,7 +1,7 @@
 import { useThree, extend, useFrame } from "@react-three/fiber";
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { OrbitControls, TransformControls } from "@react-three/drei";
-import { buttonColor } from "../styles/Colours";
+import { backgroundColor, buttonColor, navBarColor } from "../styles/Colours";
 import {
   VStack,
   Button,
@@ -12,7 +12,13 @@ import {
   SliderThumb,
   SliderMark,
   Tooltip,
-  HStack,
+  Box,
+  Card,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
 } from "@chakra-ui/react";
 import { InlineMath } from "react-katex";
 import nerdamer from "nerdamer/all.min";
@@ -241,11 +247,10 @@ export const DivergenceVisual = () => {
         2
       )})j+(${nVector.z.toFixed(2)})k`,
     });
-    const { _w, _x, _y, _z } = new THREE.Quaternion().setFromEuler(eulerAngles);
-    const quat = { w: _w, x: _x, y: _y, z: _z };
-    shapeRef.current.rotation.x = quat.x;
-    shapeRef.current.rotation.y = quat.y;
-    shapeRef.current.rotation.z = quat.z;
+
+    shapeRef.current.rotation.x = eulerAngles.x;
+    shapeRef.current.rotation.y = eulerAngles.y;
+    shapeRef.current.rotation.z = eulerAngles.z;
   }, [divergenceData.rotation_x, divergenceData.rotation_z]);
   return (
     <>
@@ -481,5 +486,42 @@ export const RotationSlider = ({ text, value, state, setState }) => {
         </SliderTrack>
       </Slider>
     </VStack>
+  );
+};
+
+export const YouTubeVideo = ({ videos }) => {
+  return (
+    <Accordion allowToggle width={"100%"}>
+      {videos.map((video) => {
+        return (
+          <AccordionItem>
+            <h2>
+              <AccordionButton>
+                <Box
+                  as='span'
+                  flex='1'
+                  textAlign='right'
+                  textColor={buttonColor}
+                >
+                  {video.caption}
+                </Box>
+                <AccordionIcon />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}>
+              <iframe
+                width='100%'
+                height='500'
+                src={`https://www.youtube.com/embed/${video.embedId}`}
+                frameBorder='0'
+                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                allowFullScreen
+                title='Embedded youtube'
+              />
+            </AccordionPanel>
+          </AccordionItem>
+        );
+      })}
+    </Accordion>
   );
 };
